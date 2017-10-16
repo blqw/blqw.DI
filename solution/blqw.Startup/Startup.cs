@@ -11,126 +11,59 @@ namespace blqw
     /// </summary>
     public static class Startup
     {
-        private static int _flag = 0;
+        private static readonly ServiceDescriptor _serviceProcessed = new ServiceDescriptor(new { }.GetType(), p => null, ServiceLifetime.Transient);
+        private static List<StartupInvoker> _invokers;
+        private static IServiceCollection _services;
+        private static IServiceProvider _serviceProvider;
+        private static Func<Type, bool> _filter;
 
-        /// <summary>
-        /// 执行中
-        /// </summary>
-        public static bool IsRunning => _flag == 1;
-        /// <summary>
-        /// 执行完成
-        /// </summary>
-        public static bool IsCompleted => _flag == 2;
-
-
-        private class Invoker
-        {
-            public Invoker(Type type)
-            {
-                Type = type;
-                var flags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
-                _configureServices = type.GetMethod("ConfigureServices", flags);
-                _configure = type.GetMethod("Configure", flags);
-                if (_configureServices.IsStatic == false || _configure.IsStatic == false)
-                {
-                    try
-                    {
-                        Instance = Activator.CreateInstance(type);
-                    }
-                    catch (Exception)
-                    {
-                        Type = null;
-                    }
-                }
-            }
-
-            public Type Type { get; }
-
-            public object Instance { get; }
-
-            private readonly MethodInfo _configureServices;
-
-            private readonly MethodInfo _configure;
-
-            public void ConfigureServices(IServiceCollection services)
-            {
-                if (Type != null && _configureServices != null)
-                {
-                    try
-                    {
-                        var p = _configureServices.GetParameters();
-                        var obj = _configureServices.IsStatic ? null : Instance;
-                        if (p.Length == 0)
-                        {
-                            _configureServices.Invoke(obj, null);
-                        }
-                        else if (p.Length == 1 && typeof(IServiceCollection).IsAssignableFrom(p[0].ParameterType))
-                        {
-                            _configureServices.Invoke(obj, new object[] { services });
-                        }
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-            }
-
-            public void Configure(IServiceProvider serviceProvider)
-            {
-                if (Type != null && _configure != null)
-                {
-                    try
-                    {
-                        var obj = _configureServices.IsStatic ? null : Instance;
-                        var args = _configureServices.GetParameters()
-                                        .Select(x => serviceProvider.GetService(x.ParameterType))
-                                        .ToArray();
-                        _configureServices.Invoke(obj, args);
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-            }
-        }
-
-
-        private static List<Invoker> _invokers;
-
-        private static List<Invoker> Invokers
-            => _invokers ?? (_invokers = AppDomain.CurrentDomain.GetAssemblies()
+        private static List<StartupInvoker> Invokers => _invokers 
+                                    ?? (_invokers = AppDomain.CurrentDomain.GetAssemblies()
                                         .SelectMany(x => x.Modules)
                                         .SelectMany(x => x.GetTypes())
-                                        .Where(x => x.Name == "Startup")
-                                        .Select(x => new Invoker(x))
+                                        .Where(x => x.IsClass && x.IsAbstract && x.IsSealed)
+                                        .Where(x => x.Name == "Startup" && !ReferenceEquals(x, typeof(Startup)))
+                                        .Where(x => _filter == null || _filter(x))
+                                        .Select(x => new StartupInvoker(x))
                                         .Where(x => x.Type != null)
                                         .ToList());
 
         /// <summary>
-        /// 
+        /// 注册服务
         /// </summary>
         /// <param name="container"></param>
-        public static void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(IServiceCollection services, Func<Type, bool> filter = null)
         {
-            var value = System.Threading.Interlocked.CompareExchange(ref _flag, 1, 0);
-            if (value != 0)
+            if (services == null)
+            {
+                services = _services ?? (_services = new StartupServiceCollection());
+            }
+            if (services.Contains(_serviceProcessed))
             {
                 return;
             }
-
+            services.Add(_serviceProcessed);
+            _filter = filter;
             Invokers.ForEach(x => x.ConfigureServices(services));
-            System.Threading.Interlocked.Exchange(ref _flag, 2);
         }
 
-
-        public static void Configure(IServiceProvider serviceProvider)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="filter"></param>
+        public static void Configure(IServiceProvider serviceProvider, params object[] args)
         {
-            using (var scope = serviceProvider.CreateScope())
+            if (serviceProvider == null)
             {
-                Invokers.ForEach(x => x.Configure(scope.ServiceProvider));
+                if (_services == null)
+                {
+                    throw new ArgumentNullException(nameof(_services));
+                }
+                serviceProvider = _serviceProvider ?? (_serviceProvider = _services.BuildServiceProvider());
             }
+            var provider = new ServiceProviderProxy(serviceProvider, args);
+            Invokers.ForEach(x => x.Configure(provider));
         }
     }
 }
