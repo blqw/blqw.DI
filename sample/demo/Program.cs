@@ -1,53 +1,42 @@
-﻿using System.Reflection;
-using System.Security;
-using blqw;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using blqw;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace demo
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main (string[] args)
         {
-            Startup.ConfigureServices(null);
-            Startup.Configure(null);
+            //搜索整个应用程序域中"Startup 静态类"，忽略访问修饰符
+            //调用静态类中的 ConfigureServices 方法
+            Startup.ConfigureServices (null);
+            //调用静态类中的 Configure 方法
+            Startup.Configure (null);
         }
     }
 }
 
 namespace xxx
 {
-    public delegate string GetString(object s);
     static class Startup
     {
-        public static string GetString(string s, string s1) => s + "_string";
-        public static string GetString(object s) => s + "_object";
-
-        public static void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices (/* 也可以没有参数 */IServiceCollection services)
         {
-            services.AddTransient(p => (Func<string, string, string>)GetString);
-            services.AddTransient(p => (Func<string, string>)GetString);
+            //在这里注入组件
+            services.AddTransient (p => (Func<string, string>) (s => s + "_abc"));
         }
 
-        public static void Configure(GetString get)
+        public static void Configure (/* 也可以没有参数 */Func<string, string> get)
         {
-            Console.WriteLine(get("xxx.Configure"));
-        }
-    }
-}
-
-namespace yyy
-{
-    static class Startup
-    {
-        public static void ConfigureServices()
-        {
-            Console.WriteLine("yyy.ConfigureServices");
+            //在这里使用已注入的组件
+            Console.WriteLine (get ("xxx.Configure"));
         }
     }
 }
