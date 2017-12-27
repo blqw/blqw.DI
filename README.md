@@ -2,6 +2,7 @@
 
 可以在项目启动时调用项目中所有的Startup静态类
 
+## Demo
 ```cs
 class Program
 {
@@ -33,3 +34,5 @@ static class Startup
     }
 }
 ```
+
+> 下一个版本支持 `static void ConfigureServices(IContainer container)`
