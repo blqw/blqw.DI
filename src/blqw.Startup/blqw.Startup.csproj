@@ -1,23 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
-<!-- https://docs.microsoft.com/zh-cn/dotnet/core/tools/csproj -->
+  <!-- https://docs.microsoft.com/zh-cn/dotnet/core/tools/csproj -->
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>blqw</RootNamespace>
-    <version>0.0.1</version>
+    <ProjectName>blqw.Startup</ProjectName>
+    <Version>0.0.1-beta</Version>
 
-    <PackageId>blqw.Startup</PackageId>
-    <NuspecBasePath>.\</NuspecBasePath>
-    <PackageOutputPath>$(SolutionDir)\unpkgs</PackageOutputPath>
-    <!-- <Title></Title>
+    <PackageOutputPath>$(SolutionDir)unpkgs</PackageOutputPath>
+    <PackageId>$(ProjectName)</PackageId>
+    <PackageVersion>$(Version)</PackageVersion>
+    <Title>$(ProjectName)</Title>
     <Authors>blqw</Authors>
     <Company>blqw</Company>
-    <Product>blqw.Startup</Product>
+    <Copyright>blqw Copyright 2019</Copyright>
+    <Product>$(ProjectName)</Product>
     <Description>在程序启动时调用Startup类</Description>
-    <Copyright>blqw</Copyright>
-    <PackageLicenseUrl></PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/blqw/SettingsFetcher</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/blqw/SettingsFetcher</RepositoryUrl>
-    <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl> -->
+    <PackageLicenseUrl>https://raw.githubusercontent.com/blqw/$(ProjectName)/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/blqw/$(ProjectName)</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/blqw/$(ProjectName)</RepositoryUrl>
+    <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl>
+    <PackageTags>Startup blqw</PackageTags>
+    <PackageReleaseNotes>
+      v0.0.1 初始版本
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,5 +30,5 @@
       <Version>2.0.0</Version>
     </PackageReference>
   </ItemGroup>
-
+  
 </Project>
