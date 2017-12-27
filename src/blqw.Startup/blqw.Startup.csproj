@@ -1,8 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+<!-- https://docs.microsoft.com/zh-cn/dotnet/core/tools/csproj -->
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>blqw</RootNamespace>
+    <version>0.0.1</version>
+
+    <PackageId>blqw.Startup</PackageId>
+    <NuspecBasePath>.\</NuspecBasePath>
+    <PackageOutputPath>$(SolutionDir)\unpkgs</PackageOutputPath>
+    <!-- <Title></Title>
+    <Authors>blqw</Authors>
+    <Company>blqw</Company>
+    <Product>blqw.Startup</Product>
+    <Description>在程序启动时调用Startup类</Description>
+    <Copyright>blqw</Copyright>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/blqw/SettingsFetcher</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/blqw/SettingsFetcher</RepositoryUrl>
+    <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl> -->
   </PropertyGroup>
 
   <ItemGroup>
