@@ -14,18 +14,12 @@ namespace blqw
     internal class ServiceProviderProxy : IServiceProvider
     {
         IServiceProvider _provider;
-        private readonly object[] _extraServices;
 
         /// <summary>
         /// 构造一个服务提供程序的代理
         /// </summary>
         /// <param name="provider">被代理的服务提供程序</param>
-        /// <param name="extraServices">额外提供的服务</param>
-        public ServiceProviderProxy(IServiceProvider provider, object[] extraServices)
-        {
-            _provider = provider;
-            _extraServices = extraServices;
-        }
+        public ServiceProviderProxy(IServiceProvider provider) => _provider = provider;
 
         /// <summary>
         /// 获取指定类型的服务
@@ -34,13 +28,13 @@ namespace blqw
         /// <returns></returns>
         public object GetService(Type serviceType)
         {
-            //优先从 _extraServices 中获取服务, 如果没有则从 _provider 中获取服务
-            var service = _extraServices?.FirstOrDefault(x => serviceType.IsInstanceOfType(x)) ?? _provider.GetService(serviceType);
+            //从 _provider 中获取服务
+            var service =  _provider.GetService(serviceType);
 
             //如果没有获取到, 且参数 serviceType 是委托, 则尝试获取 MethodInfo 类型的服务, 通过名称匹配后创建委托
             if (service == null && typeof(Delegate).IsAssignableFrom(serviceType))
             {
-                var methods = (_extraServices?.OfType<MethodInfo>() ?? Array.Empty<MethodInfo>()).Union(_provider.GetServices<MethodInfo>());
+                var methods = _provider.GetServices<MethodInfo>();
                 var name = serviceType.Name;
                 var serviceMethod = serviceType.GetMethod("Invoke");
                 foreach (var method in methods)
