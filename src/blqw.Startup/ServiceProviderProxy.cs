@@ -19,7 +19,7 @@ namespace blqw
         /// 构造一个服务提供程序的代理
         /// </summary>
         /// <param name="provider">被代理的服务提供程序</param>
-        public ServiceProviderProxy(IServiceProvider provider) => _provider = provider;
+        public ServiceProviderProxy(IServiceProvider provider) => _provider = provider ?? throw new ArgumentNullException(nameof(provider));
 
         /// <summary>
         /// 获取指定类型的服务
@@ -48,6 +48,12 @@ namespace blqw
             return service;
         }
 
+        /// <summary>
+        /// 比较2个方法签名是否相同, 如果相同返回方法2
+        /// </summary>
+        /// <param name="method1">方法1</param>
+        /// <param name="method2">方法2</param>
+        /// <returns></returns>
         private MethodInfo CompareMethodSignature(MethodInfo method1, MethodInfo method2)
         {
             if (method1.ReturnType != method2.ReturnType)

@@ -7,9 +7,12 @@ using System.Threading;
 
 namespace blqw
 {
+    // 预处理日志
     class PrestoreLogger : ILogger, IDisposable
     {
+        // 将处理日志的动作全部缓存起来
         private ConcurrentQueue<Func<ILogger, IDisposable>> _actions = new ConcurrentQueue<Func<ILogger, IDisposable>>();
+        // 实际的日志组件
         private ILogger _logger;
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
@@ -45,6 +48,10 @@ namespace blqw
             }
         }
 
+        /// <summary>
+        /// 将缓存日志写入到指定的日志组件
+        /// </summary>
+        /// <param name="logger"></param>
         internal void WriteTo(ILogger logger)
         {
             if (Interlocked.CompareExchange(ref _logger, logger, null) != null)

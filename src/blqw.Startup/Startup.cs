@@ -9,7 +9,7 @@ using System.Threading;
 namespace blqw
 {
     /// <summary>
-    /// 启动器
+    /// 启动器总线
     /// </summary>
     public sealed class Startup
     {
@@ -46,6 +46,11 @@ namespace blqw
             return services;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="selector"></param>
         private static void ConfigureServicesCore(IServiceCollection services, Func<IEnumerable<Assembly>, IEnumerable<Type>> selector)
         {
             if (services == null)
@@ -60,17 +65,17 @@ namespace blqw
                 }
                 services.Add(_serviceProcessed);
             }
-            var configurable = new Configurable();
+            var configurable = new ConfigurableService();
             using (configurable.Logger.BeginScope(services))
             {
                 configurable.Logger.LogInformation("开始扫描启动器");
-                var invokers = selector(AppDomain.CurrentDomain.GetAssemblies())
-                                                 .Select(x => new StartupInvoker(x, configurable.Logger))
-                                                 .Where(x => x.Type != null)
+                var startups = selector(AppDomain.CurrentDomain.GetAssemblies())
+                                                 .Select(x => new StartupProxy(x, configurable.Logger))
+                                                 .Where(x => x.SetupType != null)
                                                  .ToList();
-                configurable.SetInvoker(invokers);
-                configurable.Logger.LogInformation($"启动器扫描完成, 共 {invokers.Count} 个");
-                invokers.ForEach(x => x.ConfigureServices(services));
+                configurable.SetStartups(startups);
+                configurable.Logger.LogInformation($"启动器扫描完成, 共 {startups.Count} 个");
+                startups.ForEach(x => x.ConfigureServices(services));
                 services.AddSingleton(configurable);
             }
         }
@@ -90,13 +95,13 @@ namespace blqw
         }
 
         // 用于执行安装动作的服务
-        class Configurable
+        class ConfigurableService
         {
-            private List<StartupInvoker> _invokers;
+            private List<StartupProxy> _startups;
 
             public PrestoreLogger Logger { get; } = new PrestoreLogger();
 
-            public void SetInvoker(List<StartupInvoker> invokers) => _invokers = invokers;
+            public void SetStartups(List<StartupProxy> startups) => _startups = startups;
 
             public void Configure(IServiceProvider serviceProvider)
             {
@@ -108,22 +113,21 @@ namespace blqw
                 //创建服务代理
                 serviceProvider = new ServiceProviderProxy(serviceProvider);
                 //循环安装服务
-                _invokers.ForEach(x => x.Configure(serviceProvider));
+                _startups.ForEach(x => x.Configure(serviceProvider));
             }
         }
 
         /// <summary>
-        ///
+        /// 安装服务
         /// </summary>
-        /// <param name="serviceProvider"></param>
-        /// <param name="filter"></param>
+        /// <param name="serviceProvider">服务提供程序</param>
         public static void Configure(IServiceProvider serviceProvider)
         {
             if (serviceProvider == null)
             {
                 throw new ArgumentNullException(nameof(serviceProvider));
             }
-            var configurable = serviceProvider.GetService<Configurable>();
+            var configurable = serviceProvider.GetService<ConfigurableService>();
             if (configurable == null)
             {
                 throw new InvalidOperationException("未找到 Configurable 服务, 这可能是没有执行 ConfigureServices 或 ConfigureServicesWithAttribute");
