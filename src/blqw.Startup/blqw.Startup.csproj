@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <!-- https://docs.microsoft.com/zh-cn/dotnet/core/tools/csproj -->
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -6,7 +6,6 @@
     <ProjectName>blqw.Startup</ProjectName>
     <Version>2.0.0-beta</Version>
 
-    <PackageOutputPath>$(SolutionDir)unpkgs</PackageOutputPath>
     <PackageId>$(ProjectName)</PackageId>
     <PackageVersion>$(Version)</PackageVersion>
     <Title>$(ProjectName)</Title>
@@ -35,5 +34,5 @@ v2.0.0 重新设计
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0" />
   </ItemGroup>
-  
+
 </Project>
