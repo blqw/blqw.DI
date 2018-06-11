@@ -1,11 +1,12 @@
-﻿using blqw;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 
 
 
 namespace blqw
 {
+    /// <summary>
+    /// 扩展方法
+    /// </summary>
     static class Extensions
     {
         /// <summary>

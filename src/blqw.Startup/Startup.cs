@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 
 namespace blqw
 {
@@ -24,6 +23,10 @@ namespace blqw
         /// <param name="services">服务集合</param>
         public static void ConfigureServicesWithAttribute(IServiceCollection services)
         {
+            if (!(services is ServiceCollectionDecorator))
+            {
+                services = new ServiceCollectionDecorator(services);
+            }
             ConfigureServicesCore(services, ass => ass.Select(x =>
             {
                 var attr = x.GetCustomAttribute<AssemblyStartupAttribute>();
@@ -41,7 +44,7 @@ namespace blqw
         /// <returns>服务集合</returns>
         public static IServiceCollection ConfigureServicesWithAttribute()
         {
-            var services = new StartupServiceCollection();
+            var services = new ServiceCollectionDecorator(new ServiceCollection());
             ConfigureServicesWithAttribute(services);
             return services;
         }
