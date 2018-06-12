@@ -34,6 +34,15 @@ namespace blqw
                 {
                     return null;
                 }
+                var type = attr.Type;
+                if (type != null)
+                {
+                    if (type == typeof(Startup))
+                    {
+                        return null;
+                    }
+                    return type;
+                }
                 return x.GetType(attr.TypeFullName, false, false);
             }).Where(x => x != null));
         }

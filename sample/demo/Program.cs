@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using blqw;
 using Microsoft.Extensions.DependencyInjection;
 
-[assembly: AssemblyStartup("xxx.Startup")]
+[assembly: AssemblyStartup(typeof(xxx.Startup))]
 
 namespace demo
 {
