@@ -53,7 +53,7 @@ namespace blqw
         /// <returns>服务集合</returns>
         public static IServiceCollection ConfigureServicesWithAttribute()
         {
-            var services = new ServiceCollectionDecorator(new ServiceCollection());
+            var services = new ServiceCollectionDecorator(new List<ServiceDescriptor>());
             ConfigureServicesWithAttribute(services);
             return services;
         }

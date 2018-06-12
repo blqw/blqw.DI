@@ -12,8 +12,8 @@ namespace blqw
     /// </summary>
     internal class ServiceCollectionDecorator : IServiceCollection
     {
-        private readonly IServiceCollection _serviceCollection;
-        public ServiceCollectionDecorator(IServiceCollection serviceCollection) =>
+        private readonly IList<ServiceDescriptor> _serviceCollection;
+        public ServiceCollectionDecorator(IList<ServiceDescriptor> serviceCollection) =>
             _serviceCollection = serviceCollection ?? throw new ArgumentNullException(nameof(serviceCollection));
 
         public int IndexOf(ServiceDescriptor item) => _serviceCollection.IndexOf(item);

@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>blqw</RootNamespace>
     <ProjectName>blqw.Startup</ProjectName>
-    <Version>2.0.1-beta</Version>
+    <Version>2.0.2-beta</Version>
 
     <PackageId>$(ProjectName)</PackageId>
     <PackageVersion>$(Version)</PackageVersion>
@@ -21,17 +21,16 @@
     <PackageTags>Startup blqw IOC DI</PackageTags>
     <PackageReleaseNotes>v0.0.1 初始版本
 v2.0.0 重新设计
-v2.0.1 增加通过类型加载而不是类型全称加载的方式</PackageReleaseNotes>
-    <AssemblyVersion>2.0.1.0</AssemblyVersion>
-    <FileVersion>2.0.1.0</FileVersion>
+v2.0.1 增加通过类型加载而不是类型全称加载的方式
+v2.0.2 降低依赖的系统组件版本</PackageReleaseNotes>
+    <AssemblyVersion>2.0.2.0</AssemblyVersion>
+    <FileVersion>2.0.2.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection">
-      <Version>2.1.0</Version>
-    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0" />
   </ItemGroup>
 
