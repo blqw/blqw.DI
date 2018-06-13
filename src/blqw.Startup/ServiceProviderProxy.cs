@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections;
+using System.Linq;
 using System.Reflection;
 
 namespace blqw
@@ -24,8 +26,12 @@ namespace blqw
         /// <returns></returns>
         public object GetService(Type serviceType)
         {
+            if (typeof(IServiceProvider) == serviceType)
+            {
+                return this;
+            }
             //从 _provider 中获取服务
-            var service =  _provider.GetService(serviceType);
+            var service = _provider.GetService(serviceType);
 
             //如果没有获取到, 且参数 serviceType 是委托, 则尝试获取 MethodInfo 类型的服务, 通过名称匹配后创建委托
             if (service == null && typeof(Delegate).IsAssignableFrom(serviceType))
@@ -33,14 +39,49 @@ namespace blqw
                 var methods = _provider.GetServices<MethodInfo>();
                 var name = serviceType.Name;
                 var serviceMethod = serviceType.GetMethod("Invoke");
+                MethodInfo last = null;
                 foreach (var method in methods)
                 {
-                    if (method.Name == name && CompareMethodSignature(serviceMethod, method) is MethodInfo m)
+                    if (CompareMethodSignature(serviceMethod, method) is MethodInfo m)
                     {
-                        return m.CreateDelegate(serviceType);
+                        if (method.Name == name)
+                        {
+                            return m.CreateDelegate(serviceType);
+                        }
+                        last = m;
                     }
                 }
+                return last?.CreateDelegate(serviceType);
             }
+
+            if (service is IEnumerable enumerable && serviceType.IsGenericType && serviceType.GetGenericArguments().Length == 1)
+            {
+                var serType = serviceType.GetGenericArguments()[0];
+                var name = serType.Name;
+                if (serType is NamedType namedType)
+                {
+                    serType = namedType.ExportType;
+                    name = null;
+                }
+                if (typeof(Delegate).IsAssignableFrom(serType) && enumerable is IList list && list.IsReadOnly == false)
+                {
+                    var serviceMethod = serType.GetMethod("Invoke");
+                    for (var i = 0; i < list.Count; i++)
+                    {
+                        var method = (list[0] as Delegate)?.Method ?? list[0] as MethodInfo;
+                        if (method != null && CompareMethodSignature(serviceMethod, method) is MethodInfo m)
+                        {
+                            if (method.Name == name || name == null)
+                            {
+                                list[i] = m.CreateDelegate(serType);
+                            }
+                        }
+                    }
+                    return service;
+                }
+                return null;
+            }
+
             return service;
         }
 

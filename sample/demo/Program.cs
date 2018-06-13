@@ -25,10 +25,17 @@ namespace xxx
 
     static class Startup
     {
+
+        private static string ToJsonString(object o) => o?.ToString() ?? "null";
+
         public static void ConfigureServices(/* 也可以没有参数 */IServiceCollection services)
         {
             //在这里注入组件
+            services.AddNamedSingleton("tojson", ToJsonString);
+
+
             services.AddTransient(p => (Func<string, string>)(s => s + "_abc"));
+
             services.AddNamedSingleton("blqw", "12121212");
             services.AddNamedSingleton("blqw", 123456);
             services.AddNamedSingleton("blqw", "冰麟轻武");
@@ -36,15 +43,18 @@ namespace xxx
 
         public static void Configure(IServiceProvider provider)
         {
+            var service4 = provider.GetNamedService<Func<object, string>>("tojson");
+            Console.WriteLine(service4);
+
             var service1 = provider.GetRequiredService<Func<string, string>>();
             Console.WriteLine(service1("xx") == "xx_abc");
 
             var service2 = provider.GetRequiredNamedService<string>("blqw");
             Console.WriteLine(service2 == "冰麟轻武");
 
-
             var service3 = provider.GetRequiredNamedService<int>("blqw");
             Console.WriteLine(service3 == 123456);
+
         }
     }
 }

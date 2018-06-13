@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace blqw
@@ -31,6 +32,24 @@ namespace blqw
         #endregion
 
         #region Singleton
+        private static bool FactoryIsDelegateService(MethodInfo factoryMethod)
+        {
+            if (factoryMethod == null)
+            {
+                return false;
+            }
+            if (factoryMethod.ReturnType != typeof(object))
+            {
+                return true;
+            }
+            var paras = factoryMethod.GetParameters();
+            if (paras.Length != 1 || paras[0].ParameterType != typeof(IServiceProvider))
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static IServiceCollection AddNamedSingleton<TService>(this IServiceCollection services, string name)
     where TService : class
         {
@@ -39,8 +58,15 @@ namespace blqw
         }
         public static IServiceCollection AddNamedSingleton(this IServiceCollection services, string name, Func<IServiceProvider, object> implementationFactory)
         {
-            services.Add(new ServiceDescriptor(new NamedType(name, null), implementationFactory, ServiceLifetime.Singleton));
-            return services;
+            if (FactoryIsDelegateService(implementationFactory.Method))
+            {
+                return services.AddNamedSingleton(name, implementationFactory.Method);
+            }
+            else
+            {
+                services.Add(new ServiceDescriptor(new NamedType(name, null), implementationFactory, ServiceLifetime.Singleton));
+                return services;
+            }
         }
         public static IServiceCollection AddNamedSingleton(this IServiceCollection services, string name, Type serviceType)
         {
@@ -79,15 +105,15 @@ namespace blqw
         public static object GetRequiredNamedService(this IServiceProvider provider, string name) =>
             provider.GetRequiredService(new NamedType(name));
         public static object GetRequiredNamedService(this IServiceProvider provider, string name, Type serviceType) =>
-            provider.GetServices(new NamedType(name)).LastOrDefault(serviceType.IsInstanceOfType);
+            provider.GetServices(new NamedType(name) { ExportType = serviceType }).LastOrDefault(serviceType.IsInstanceOfType);
         public static T GetRequiredNamedService<T>(this IServiceProvider provider, string name) =>
-            provider.GetServices(new NamedType(name)).OfType<T>().Last<T>();
+            provider.GetServices(new NamedType(name) { ExportType = typeof(T) }).OfType<T>().Last<T>();
         public static T GetNamedService<T>(this IServiceProvider provider, string name) =>
-            provider.GetServices(new NamedType(name)).OfType<T>().LastOrDefault<T>();
+            provider.GetServices(new NamedType(name) { ExportType = typeof(T) }).OfType<T>().LastOrDefault<T>();
         public static IEnumerable<T> GetNamedServices<T>(this IServiceProvider provider, string name) =>
-            provider.GetServices(new NamedType(name)).OfType<T>().ToArray();
+            provider.GetServices(new NamedType(name) { ExportType = typeof(T) }).OfType<T>().ToArray();
         public static IEnumerable<object> GetNamedServices(this IServiceProvider provider, string name, Type serviceType) =>
-            provider.GetServices(new NamedType(name)).Where(serviceType.IsInstanceOfType).ToArray();
+            provider.GetServices(new NamedType(name) { ExportType = serviceType }).Where(serviceType.IsInstanceOfType).ToArray();
         #endregion
     }
 }

@@ -34,12 +34,35 @@ namespace blqw
             {
                 _serviceCollection.Add(new ServiceDescriptor(typeof(MethodInfo), ((Delegate)item.ImplementationInstance).Method));
             }
-            else if (item.ImplementationFactory != null
-                    && typeof(Delegate).IsAssignableFrom(item.ImplementationFactory.Method.ReturnType)
-                    && item.ServiceType != typeof(MethodInfo))
+            else if (item.ImplementationFactory != null && item.ServiceType != typeof(MethodInfo))
             {
-                _serviceCollection.Add(new ServiceDescriptor(typeof(MethodInfo), p => ((Delegate)item.ImplementationFactory(p)).Method, item.Lifetime));
+                if (typeof(Delegate).IsAssignableFrom(item.ImplementationFactory.Method.ReturnType))
+                {
+                    _serviceCollection.Add(new ServiceDescriptor(typeof(MethodInfo), p => ((Delegate)item.ImplementationFactory(p)).Method, item.Lifetime));
+                }
+                else if (FactoryIsDelegateService(item.ImplementationFactory.Method))
+                {
+                    _serviceCollection.Add(new ServiceDescriptor(typeof(MethodInfo), item.ImplementationFactory.Method));
+                }
             }
+        }
+
+        private bool FactoryIsDelegateService(MethodInfo factoryMethod)
+        {
+            if (factoryMethod == null)
+            {
+                return false;
+            }
+            if (factoryMethod.ReturnType != typeof(object))
+            {
+                return true;
+            }
+            var paras = factoryMethod.GetParameters();
+            if (paras.Length != 1 || paras[0].ParameterType != typeof(IServiceProvider))
+            {
+                return true;
+            }
+            return false;
         }
 
         public void Clear() => _serviceCollection.Clear();

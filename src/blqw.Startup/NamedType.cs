@@ -24,6 +24,7 @@ namespace blqw
                 _guid = new Guid(hash);
             }
         }
+        public Type ExportType { get; set; }
         public override Guid GUID => _guid;
         public override bool Equals(object obj) => Equals(obj as NamedType);
         public override int GetHashCode() => _name.GetHashCode();
