@@ -23,9 +23,10 @@
 v2.0.0 重新设计
 v2.0.1 增加通过类型加载而不是类型全称加载的方式
 v2.0.2 降低依赖的系统组件版本
-v2.0.3 支持命名服务</PackageReleaseNotes>
-    <AssemblyVersion>2.0.3.0</AssemblyVersion>
-    <FileVersion>2.0.3.0</FileVersion>
+v2.0.3 支持命名服务
+v2.0.4 支持命名服务委托和方法服务</PackageReleaseNotes>
+    <AssemblyVersion>2.0.4.0</AssemblyVersion>
+    <FileVersion>2.0.4.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
