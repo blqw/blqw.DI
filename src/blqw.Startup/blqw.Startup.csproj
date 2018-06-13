@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>blqw</RootNamespace>
     <ProjectName>blqw.Startup</ProjectName>
-    <Version>2.0.3-beta</Version>
+    <Version>2.0.4-beta</Version>
 
     <PackageId>$(ProjectName)</PackageId>
     <PackageVersion>$(Version)</PackageVersion>
