@@ -44,7 +44,7 @@ namespace xxx
         public static void Configure(IServiceProvider provider)
         {
             var service4 = provider.GetNamedService<Func<object, string>>("tojson");
-            Console.WriteLine(service4);
+            Console.WriteLine(service4(null) == "null");
 
             var service1 = provider.GetRequiredService<Func<string, string>>();
             Console.WriteLine(service1("xx") == "xx_abc");

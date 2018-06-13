@@ -34,17 +34,21 @@ namespace blqw
             var service = _provider.GetService(serviceType);
 
             //如果没有获取到, 且参数 serviceType 是委托, 则尝试获取 MethodInfo 类型的服务, 通过名称匹配后创建委托
-            if (service == null && typeof(Delegate).IsAssignableFrom(serviceType))
+            if (service == null)
             {
+                if (typeof(Delegate).IsAssignableFrom(serviceType) == false)
+                {
+                    return null;
+                }
                 var methods = _provider.GetServices<MethodInfo>();
                 var name = serviceType.Name;
-                var serviceMethod = serviceType.GetMethod("Invoke");
+                var exportMethod = serviceType.GetMethod("Invoke");
                 MethodInfo last = null;
                 foreach (var method in methods)
                 {
-                    if (CompareMethodSignature(serviceMethod, method) is MethodInfo m)
+                    if (CompareMethodSignature(method, exportMethod) is MethodInfo m)
                     {
-                        if (method.Name == name)
+                        if (method.Name == name) // 如果能找到名称一致的方法就返回, 否则返回最后一个签名一致的方法
                         {
                             return m.CreateDelegate(serviceType);
                         }
@@ -53,35 +57,32 @@ namespace blqw
                 }
                 return last?.CreateDelegate(serviceType);
             }
-
-            if (service is IEnumerable enumerable && serviceType.IsGenericType && serviceType.GetGenericArguments().Length == 1)
+            if (service is IList list && list.IsReadOnly == false && serviceType.IsGenericType && serviceType.GetGenericArguments().Length == 1)
             {
-                var serType = serviceType.GetGenericArguments()[0];
-                var name = serType.Name;
-                if (serType is NamedType namedType)
+                var exportType = serviceType.GetGenericArguments()[0];
+                var exportName = exportType.Name;
+                if (exportType is NamedType namedType)
                 {
-                    serType = namedType.ExportType;
-                    name = null;
+                    exportType = namedType.ExportType;
+                    exportName = null;
                 }
-                if (typeof(Delegate).IsAssignableFrom(serType) && enumerable is IList list && list.IsReadOnly == false)
+                if (typeof(Delegate).IsAssignableFrom(exportType))
                 {
-                    var serviceMethod = serType.GetMethod("Invoke");
+                    var exportMethod = exportType.GetMethod("Invoke");
                     for (var i = 0; i < list.Count; i++)
                     {
-                        var method = (list[0] as Delegate)?.Method ?? list[0] as MethodInfo;
-                        if (method != null && CompareMethodSignature(serviceMethod, method) is MethodInfo m)
+                        var method = (list[i] as Delegate)?.Method ?? list[i] as MethodInfo;
+                        if (CompareMethodSignature(exportMethod, method) is MethodInfo m)
                         {
-                            if (method.Name == name || name == null)
+                            if (exportName == null || method.Name == exportName)
                             {
-                                list[i] = m.CreateDelegate(serType);
+                                list[i] = m.CreateDelegate(exportType);
                             }
                         }
                     }
                     return service;
                 }
-                return null;
             }
-
             return service;
         }
 
@@ -93,7 +94,7 @@ namespace blqw
         /// <returns></returns>
         private MethodInfo CompareMethodSignature(MethodInfo method1, MethodInfo method2)
         {
-            if (method1.ReturnType != method2.ReturnType)
+            if (method1 == null || method2 == null || method1.ReturnType != method2.ReturnType)
             {
                 return null;
             }
