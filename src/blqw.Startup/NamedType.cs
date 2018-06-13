@@ -12,7 +12,7 @@ namespace blqw
     {
         private readonly string _name;
         private readonly Guid _guid;
-
+        public NamedType(string name) : this(name, null) { }
         public NamedType(string name, Type delegatingType)
             : base(delegatingType ?? typeof(object))
         {
