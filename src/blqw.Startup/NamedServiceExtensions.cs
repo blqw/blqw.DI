@@ -51,7 +51,7 @@ namespace blqw
         }
 
         public static IServiceCollection AddNamedSingleton<TService>(this IServiceCollection services, string name)
-    where TService : class
+            where TService : class
         {
             services.Add(new ServiceDescriptor(new NamedType(name, typeof(TService)), typeof(TService), ServiceLifetime.Singleton));
             return services;
@@ -105,15 +105,15 @@ namespace blqw
         public static object GetRequiredNamedService(this IServiceProvider provider, string name) =>
             provider.GetRequiredService(new NamedType(name));
         public static object GetRequiredNamedService(this IServiceProvider provider, string name, Type serviceType) =>
-            provider.GetServices(new NamedType(name) { ExportType = serviceType }).LastOrDefault(serviceType.IsInstanceOfType);
+            provider.GetServices(new NamedType(name, serviceType)).LastOrDefault(serviceType.IsInstanceOfType);
         public static T GetRequiredNamedService<T>(this IServiceProvider provider, string name) =>
-            provider.GetServices(new NamedType(name) { ExportType = typeof(T) }).OfType<T>().Last<T>();
+            provider.GetServices(new NamedType(name, typeof(T))).OfType<T>().Last<T>();
         public static T GetNamedService<T>(this IServiceProvider provider, string name) =>
-            provider.GetServices(new NamedType(name) { ExportType = typeof(T) }).OfType<T>().LastOrDefault<T>();
+            provider.GetServices(new NamedType(name, typeof(T))).OfType<T>().LastOrDefault<T>();
         public static IEnumerable<T> GetNamedServices<T>(this IServiceProvider provider, string name) =>
-            provider.GetServices(new NamedType(name) { ExportType = typeof(T) }).OfType<T>().ToArray();
+            provider.GetServices(new NamedType(name, typeof(T))).OfType<T>().ToArray();
         public static IEnumerable<object> GetNamedServices(this IServiceProvider provider, string name, Type serviceType) =>
-            provider.GetServices(new NamedType(name) { ExportType = serviceType }).Where(serviceType.IsInstanceOfType).ToArray();
+            provider.GetServices(new NamedType(name, serviceType)).Where(serviceType.IsInstanceOfType).ToArray();
         #endregion
     }
 }

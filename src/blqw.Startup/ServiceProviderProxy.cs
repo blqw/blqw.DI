@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -30,60 +31,98 @@ namespace blqw
             {
                 return this;
             }
-            //从 _provider 中获取服务
+            // 从 _provider 中获取服务
             var service = _provider.GetService(serviceType);
-
-            //如果没有获取到, 且参数 serviceType 是委托, 则尝试获取 MethodInfo 类型的服务, 通过名称匹配后创建委托
+            // 如果获取不到服务, 则舱尝试获取委托服务
             if (service == null)
             {
-                if (typeof(Delegate).IsAssignableFrom(serviceType) == false)
+                if (typeof(Delegate).IsAssignableFrom(serviceType))
                 {
-                    return null;
+                    return CreateDelegate(serviceType, _provider.GetServices<MethodInfo>());
                 }
-                var methods = _provider.GetServices<MethodInfo>();
-                var name = serviceType.Name;
-                var exportMethod = serviceType.GetMethod("Invoke");
-                MethodInfo last = null;
-                foreach (var method in methods)
-                {
-                    if (CompareMethodSignature(method, exportMethod) is MethodInfo m)
-                    {
-                        if (method.Name == name) // 如果能找到名称一致的方法就返回, 否则返回最后一个签名一致的方法
-                        {
-                            return m.CreateDelegate(serviceType);
-                        }
-                        last = m;
-                    }
-                }
-                return last?.CreateDelegate(serviceType);
+                return null;
             }
+
             if (service is IList list && list.IsReadOnly == false && serviceType.IsGenericType && serviceType.GetGenericArguments().Length == 1)
             {
-                var exportType = serviceType.GetGenericArguments()[0];
-                var exportName = exportType.Name;
-                if (exportType is NamedType namedType)
+                var type = serviceType.GetGenericArguments()[0];
+                var delegateType = (type as IServiceTypeDecorator)?.ServiceType ?? type;
+                if (typeof(Delegate).IsAssignableFrom(delegateType))
                 {
-                    exportType = namedType.ExportType;
-                    exportName = null;
-                }
-                if (typeof(Delegate).IsAssignableFrom(exportType))
-                {
-                    var exportMethod = exportType.GetMethod("Invoke");
+                    var delegateMethod = delegateType.GetMethod("Invoke");
                     for (var i = 0; i < list.Count; i++)
                     {
-                        var method = (list[i] as Delegate)?.Method ?? list[i] as MethodInfo;
-                        if (CompareMethodSignature(exportMethod, method) is MethodInfo m)
+                        if (delegateType.IsInstanceOfType(list[i]))
                         {
-                            if (exportName == null || method.Name == exportName)
-                            {
-                                list[i] = m.CreateDelegate(exportType);
-                            }
+                            continue;
+                        }
+                        var method = (list[i] as Delegate)?.Method ?? list[i] as MethodInfo;
+                        if (CompareMethodSignature(delegateMethod, method) is MethodInfo m)
+                        {
+                            list[i] = m.CreateDelegate(delegateType);
                         }
                     }
-                    return service;
                 }
             }
             return service;
+        }
+
+
+        /// <summary>
+        /// 创建委托
+        /// </summary>
+        private object CreateDelegate(Type delegateType, IEnumerable<MethodInfo> methods)
+        {
+            var delegateName = delegateType.Name;
+            var delegateMethod = delegateType.GetMethod("Invoke");
+            MethodInfo last = null;
+            MethodInfo lastExact = null;
+            foreach (var method in methods)
+            {
+                if (CompareMethodSignature(method, delegateMethod) is MethodInfo m)
+                {
+                    if (method.Name == delegateName)
+                    {
+                        lastExact = m;
+                    }
+                    else if (lastExact == null)
+                    {
+                        last = m;
+                    }
+                }
+            }
+            return (lastExact ?? last)?.CreateDelegate(delegateType);
+        }
+
+        /// <summary>
+        /// 获取委托服务
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="serviceType"></param>
+        /// <returns></returns>
+        private object CreateDelegateService(IServiceProvider provider, Type serviceType)
+        {
+            if (typeof(Delegate).IsAssignableFrom(serviceType) == false)
+            {
+                return null;
+            }
+            var methods = provider.GetServices<MethodInfo>();
+            var name = serviceType.Name;
+            var exportMethod = serviceType.GetMethod("Invoke");
+            MethodInfo last = null;
+            foreach (var method in methods)
+            {
+                if (CompareMethodSignature(method, exportMethod) is MethodInfo m)
+                {
+                    if (method.Name == name) // 如果能找到名称一致的方法就返回, 否则返回最后一个签名一致的方法
+                    {
+                        return m.CreateDelegate(serviceType);
+                    }
+                    last = m;
+                }
+            }
+            return last?.CreateDelegate(serviceType);
+            throw new NotImplementedException();
         }
 
         /// <summary>
