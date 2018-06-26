@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace blqw
@@ -8,13 +10,15 @@ namespace blqw
     /// <summary>
     /// 控制台日志, 用于将日志输出到控制台
     /// </summary>
-    class ConsoleLogger : ILogger
+    class TextWriterLogger : ILogger
     {
+
+        public TextWriterLogger(TextWriter writer) => _writer = writer ?? throw new ArgumentNullException(nameof(writer));
 
         public IDisposable BeginScope<TState>(TState state)
         {
             WriteIndent();
-            Console.WriteLine(typeof(TState).FullName + ":" + state?.ToString());
+            _writer.WriteLine(typeof(TState).FullName + ":" + state?.ToString());
             Interlocked.Increment(ref _indent);
             return new Unindent(this);
         }
@@ -23,21 +27,25 @@ namespace blqw
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
+            if (ReferenceEquals(state, LoggerTextWriter.STATE))
+            {
+                return;
+            }
             var e = GetEventString(eventId);
             if (formatter != null)
             {
                 WriteIndent();
-                Console.WriteLine($"{GetString(logLevel)}{e} : {formatter(state, exception)}");
+                _writer.WriteLine($"{GetString(logLevel)}{e} : {formatter(state, exception)}");
             }
             else
             {
                 WriteIndent();
-                Console.WriteLine($"{GetString(logLevel)}{e} : {state.ToString()}");
+                _writer.WriteLine($"{GetString(logLevel)}{e} : {state.ToString()}");
                 //循环输出异常
                 while (exception != null)
                 {
                     WriteIndent();
-                    Console.WriteLine(exception.ToString());
+                    _writer.WriteLine(exception.ToString());
                     // 获取基础异常
                     var ex = exception.GetBaseException();
                     // 基础异常获取失败则获取 内部异常
@@ -58,6 +66,7 @@ namespace blqw
         private int _indent = 0;
         // 生成1~10个空格字符串的缩进
         private readonly string[] _indentStrings = Enumerable.Range(0, 10).Select(x => new string(' ', x * 4)).ToArray();
+        private readonly TextWriter _writer;
 
         // 输入缩进
         void WriteIndent()
@@ -65,7 +74,7 @@ namespace blqw
             var indent = _indent;
             if (indent > 0)
             {
-                Console.Write(_indentStrings.ElementAtOrDefault(indent) ?? new string(' ', indent * 4));
+                _writer.Write(_indentStrings.ElementAtOrDefault(indent) ?? new string(' ', indent * 4));
             }
         }
 
@@ -101,9 +110,9 @@ namespace blqw
         // 取消缩进对象
         class Unindent : IDisposable
         {
-            private ConsoleLogger _consoleLogger;
+            private TextWriterLogger _consoleLogger;
 
-            public Unindent(ConsoleLogger consoleLogger) => _consoleLogger = consoleLogger;
+            public Unindent(TextWriterLogger consoleLogger) => _consoleLogger = consoleLogger;
             // 取消缩进
             public void Dispose() => Interlocked.Decrement(ref _consoleLogger._indent);
         }

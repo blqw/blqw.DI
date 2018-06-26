@@ -1,6 +1,12 @@
 ﻿using blqw;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
+using System.CodeDom.Compiler;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 [assembly: AssemblyStartup(typeof(xxx.Startup))]
 
@@ -12,10 +18,16 @@ namespace demo
         static void Main(string[] args)
         {
             //搜索整个应用程序域中"Startup 静态类"，忽略访问修饰符
-            //调用静态类中的 ConfigureServices 方法
-            var services = Startup.ConfigureServicesWithAttribute();
-            //调用静态类中的 Configure 方法
-            Startup.Configure(services.BuildServiceProvider());
+            Startup.ConfigureServicesWithAttribute()    //注册服务
+                    .AddServers(services =>
+                    {
+                        services.AddSingleton<ILogger>(new MyLogger("d:\\log.log"));
+                        services.AddConsoleLog();
+                    })
+                    .BuildServiceProvider()             //编译服务
+                    .ConsoleToLogger()                  //控制台到日志服务
+                    .Configure();                       //安装服务
+            Console.WriteLine("hello world");
         }
     }
 }

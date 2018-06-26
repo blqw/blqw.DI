@@ -21,7 +21,7 @@ namespace blqw
         /// 寻找并执行启动器中的注册服务方法, 根据特性 <seealso cref="AssemblyStartupAttribute"/> 的标识寻找程序集中的启动器
         /// </summary>
         /// <param name="services">服务集合</param>
-        public static void ConfigureServicesWithAttribute(IServiceCollection services)
+        public static IServiceCollection ConfigureServicesWithAttribute(IServiceCollection services)
         {
             if (!(services is ServiceCollectionDecorator))
             {
@@ -45,6 +45,7 @@ namespace blqw
                 }
                 return x.GetType(attr.TypeFullName, false, false);
             }).Where(x => x != null));
+            return services;
         }
 
         /// <summary>
@@ -118,10 +119,9 @@ namespace blqw
             public void Configure(IServiceProvider serviceProvider)
             {
                 //获取日志服务
-                var logger = serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<Startup>()
-                            ?? serviceProvider.GetService<ILogger>();
+                var logger = serviceProvider.GetLogger();
                 //将预处理日志写入日志服务
-                Logger.WriteTo(logger ?? new ConsoleLogger());
+                Logger.WriteTo(logger ?? new TextWriterLogger(Console.Out));
                 //创建服务代理
                 serviceProvider = new ServiceProviderProxy(serviceProvider);
                 //循环安装服务
@@ -144,7 +144,7 @@ namespace blqw
             {
                 throw new InvalidOperationException("未找到 Configurable 服务, 这可能是没有执行 ConfigureServices 或 ConfigureServicesWithAttribute");
             }
-            using (configurable.Logger.BeginScope(serviceProvider))
+            using (configurable.Logger.BeginScope(typeof(Startup)))
             {
                 configurable.Logger.LogInformation("开始安装服务");
                 configurable.Configure(serviceProvider);
