@@ -5,6 +5,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.IO;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,6 +29,10 @@ namespace demo
                     .ConsoleToLogger()                  //控制台到日志服务
                     .Configure();                       //安装服务
             Console.WriteLine("hello world");
+            for (var i = 0; i < 10; i++)
+            {
+                Console.WriteLine(i);
+            }
         }
     }
 }

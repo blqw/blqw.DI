@@ -29,6 +29,7 @@ namespace blqw
         {
             if (ReferenceEquals(state, LoggerTextWriter.STATE))
             {
+                //过滤由控制台输出到ILogger的日志
                 return;
             }
             var e = GetEventString(eventId);
@@ -71,6 +72,7 @@ namespace blqw
         // 输入缩进
         void WriteIndent()
         {
+            _writer.Write(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff "));
             var indent = _indent;
             if (indent > 0)
             {

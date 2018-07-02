@@ -25,6 +25,10 @@ namespace demo
             {
                 File.AppendAllText(_file, new { logLevel, eventId, state, exception }.ToString() + Environment.NewLine);
             }
+            else if (state is Type t && t == typeof(Console))
+            {
+                File.AppendAllText(_file, formatter(state, exception) + Environment.NewLine);
+            }
             else
             {
                 File.AppendAllText(_file, new { logLevel, eventId, formatter = formatter(state, exception) }.ToString() + Environment.NewLine);
@@ -34,8 +38,8 @@ namespace demo
         public bool IsEnabled(LogLevel logLevel) => true;
         public IDisposable BeginScope<TState>(TState state)
         {
-            File.AppendAllText(_file, "进入:" + state.ToString() + Environment.NewLine);
-            return new EndScope(() => File.AppendAllText(_file, "退出:" + state.ToString() + Environment.NewLine));
+            File.AppendAllText(_file, "BeginScope :" + state.ToString() + Environment.NewLine);
+            return new EndScope(() => File.AppendAllText(_file, "EndScope :" + state.ToString() + Environment.NewLine));
         }
 
         class EndScope : IDisposable

@@ -52,9 +52,9 @@ namespace blqw
 
         public static void ConsoleToLogger(this ILogger logger)
         {
-            if (!(Console.Out is MulticastTextWriter))
+            if (!(Console.Out is LoggerTextWriter))
             {
-                Console.SetOut(new MulticastTextWriter(Console.Out, Console.Out));
+                Console.SetOut(new LoggerTextWriter(logger, Console.Out));
             }
         }
     }
