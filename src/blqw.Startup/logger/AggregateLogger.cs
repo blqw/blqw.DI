@@ -7,18 +7,15 @@ using System.Text;
 
 namespace blqw
 {
-    class MulticastLogger : ILogger
+    /// <summary>
+    /// 聚合日志
+    /// </summary>
+    class AggregateLogger : ILogger
     {
         private readonly ILogger[] _loggers;
 
-        public MulticastLogger(IServiceProvider serviceProvider)
-        {
-            if (serviceProvider == null)
-            {
-                throw new ArgumentNullException(nameof(serviceProvider));
-            }
-            _loggers = serviceProvider.GetServices<ILogger>().ToArray();
-        }
+        public AggregateLogger(IEnumerable<ILogger> loggers) =>
+            _loggers = loggers.ToArray();
 
         class EndScope : IDisposable
         {
@@ -32,7 +29,6 @@ namespace blqw
         public bool IsEnabled(LogLevel logLevel) => true;
 
         public IDisposable BeginScope<TState>(TState state) => new EndScope(_loggers.Select(x => x.BeginScope(state)));
-
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {

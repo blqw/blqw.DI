@@ -46,7 +46,7 @@ namespace blqw
             if (service is IList list && list.IsReadOnly == false && serviceType.IsGenericType && serviceType.GetGenericArguments().Length == 1)
             {
                 var type = serviceType.GetGenericArguments()[0];
-                var delegateType = (type as IServiceTypeDecorator)?.ServiceType ?? type;
+                var delegateType = (type as IServiceTypePretender)?.ServiceType ?? type;
                 if (typeof(Delegate).IsAssignableFrom(delegateType))
                 {
                     var delegateMethod = delegateType.GetMethod("Invoke");

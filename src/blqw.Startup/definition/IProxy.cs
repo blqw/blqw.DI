@@ -5,10 +5,11 @@ using System.Text;
 namespace blqw
 {
     /// <summary>
-    /// 服务类型装饰器
+    /// 代理接口
     /// </summary>
-    public interface IServiceTypeDecorator
+    /// <typeparam name="T"></typeparam>
+    interface IProxy<T>
     {
-        Type ServiceType { get; }
+        T ActualTarget { get; }
     }
 }

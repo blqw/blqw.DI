@@ -8,7 +8,7 @@ namespace blqw
     /// <summary>
     /// 命名类型
     /// </summary>
-    internal sealed class NamedType : TypeDelegator, IServiceTypeDecorator
+    internal sealed class NamedType : TypeDelegator, IServiceTypePretender
     {
         private readonly string _name;
         private readonly Guid _guid;

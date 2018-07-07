@@ -12,11 +12,6 @@ namespace demo
 
         public MyLogger(string file)
         {
-            if (!File.Exists(file))
-            {
-                File.Create(file);
-            }
-
             _file = file;
         }
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)

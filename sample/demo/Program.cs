@@ -18,16 +18,19 @@ namespace demo
     {
         static void Main(string[] args)
         {
+            if (File.Exists("d:\\log.log"))
+            {
+                File.Delete("d:\\log.log");
+            }
             //搜索整个应用程序域中"Startup 静态类"，忽略访问修饰符
-            Startup.ConfigureServicesWithAttribute()    //注册服务
-                    .AddServers(services =>
-                    {
-                        services.AddSingleton<ILogger>(new MyLogger("d:\\log.log"));
-                        services.AddConsoleLog();
-                    })
+            Startup.CreateServiceCollection()
+                    .AddSingleton<ILogger>(new MyLogger("d:\\log.log"))
+                    .AddConsoleLogger()
+                    .ConsoleForwardingToLogger()
+                    .ConfigureServices()
                     .BuildServiceProvider()             //编译服务
-                    .ConsoleToLogger()                  //控制台到日志服务
                     .Configure();                       //安装服务
+
             Console.WriteLine("hello world");
             for (var i = 0; i < 10; i++)
             {
