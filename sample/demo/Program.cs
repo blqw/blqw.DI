@@ -23,13 +23,14 @@ namespace demo
             {
                 File.Delete("d:\\log.log");
             }
-            //搜索整个应用程序域中"Startup 静态类"，忽略访问修饰符
+
             Startup.CreateServiceCollection()
-                    .AddSingleton<ILogger>(new MyLogger("d:\\log.log"))
-                    .AddConsoleLogger()
-                    .ConsoleForwardingToLogger()
-                    .ConfigureServices()
-                    .ConfigureServices(AppDomain.CurrentDomain.FindStartupTypesByName())
+                    .AddSingleton<ILogger>(new MyLogger("d:\\log.log")) //添加自定义日志组件
+                    .AddConsoleLogger()             //添加控制台日志
+                    .ConsoleForwardingToLogger()    //使控制台输出内容(Console.Wirte)转发到日志
+                    .TraceForwardingToLogger()      //使Trace输出内容(Trace.Wirte等)转发到日志
+                    .ConfigureServices()            //添加 AssemblyStartupAttribute 特性标注的启动类
+                    //.ConfigureServices(AppDomain.CurrentDomain.FindStartupTypesByName()) //搜索整个应用程序域中名称为"Startup"的启动类，忽略访问修饰符
                     .BuildServiceProvider()             //编译服务
                     .Configure();                       //安装服务
 
@@ -37,6 +38,12 @@ namespace demo
             for (var i = 0; i < 10; i++)
             {
                 Console.WriteLine(i);
+            }
+
+            Trace.WriteLine("Trace.WriteLine 输出到日志 10-19");
+            for (var i = 10; i < 20; i++)
+            {
+                Trace.WriteLine(i);
             }
         }
     }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -151,10 +152,29 @@ namespace blqw
         }
 
         /// <summary>
+        /// Trace内容转发到日志
+        /// </summary>
+        public static IServiceProvider TraceForwardingToLogger(this IServiceProvider serviceProvider)
+        {
+            var logger = serviceProvider?.GetLogger();
+            if (logger != null)
+            {
+                WatchTrace(logger);
+            }
+            return serviceProvider;
+        }
+
+        /// <summary>
         /// 控制台内容转发到日志
         /// </summary>
         public static IServiceCollection ConsoleForwardingToLogger(this IServiceCollection services) =>
             services?.AddSingleton<IStartup>(new ActionStartup(null, provider => ConsoleForwardingToLogger(provider)));
+
+        /// <summary>
+        /// Trace内容转发到日志
+        /// </summary>
+        public static IServiceCollection TraceForwardingToLogger(this IServiceCollection services) =>
+            services?.AddSingleton<IStartup>(new ActionStartup(null, provider => TraceForwardingToLogger(provider)));
 
         /// <summary>
         /// 获取日志服务
@@ -177,12 +197,20 @@ namespace blqw
         /// 观察控制台输出，并转发到指定的日志组件
         /// </summary>
         /// <param name="logger"></param>
-        public static void WatchConsole(this ILogger logger)
+        public static void WatchConsole(this ILogger logger) =>
+             Console.SetOut(new ConsoleOutProxy(logger));
+
+        /// <summary>
+        /// 观察控制台输出，并转发到指定的日志组件
+        /// </summary>
+        /// <param name="logger"></param>
+        public static void WatchTrace(this ILogger logger)
         {
-            if (Console.Out is ConsoleOutProxy == false)
+            if (Trace.Listeners.OfType<LoggerTraceListener>().Any(x => x.Logger == logger))
             {
-                Console.SetOut(new ConsoleOutProxy(logger));
+                return;
             }
+            Trace.Listeners.Add(new LoggerTraceListener(logger));
         }
     }
 }
