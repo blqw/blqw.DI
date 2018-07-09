@@ -96,12 +96,13 @@ namespace blqw
                 {
                     return Type.EmptyTypes;
                 }
-                using ((logger ?? ConsoleLogger.Instance).BeginScope("assembly:" + assembly.FullName))
+                var assName = assembly.GetName();
+                using ((logger ?? ConsoleLogger.Instance).BeginScope($"程序集:{assName?.Name} {assName?.Version}"))
                 {
                     var types = attrs.Select(x => x.SetLogger(logger).GetType(assembly)).Where(t => t != null).ToList();
                     foreach (var type in types)
                     {
-                        logger.Log($"启动器 -> {type.Assembly.FullName}, {type.FullName}");
+                        logger.Log($"启动器 -> {type.FullName}");
                     }
                     return types;
                 }

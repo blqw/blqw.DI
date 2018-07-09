@@ -13,6 +13,21 @@ namespace blqw
     /// </summary>
     public sealed class Startup
     {
+        private static ILogger _logger = new PrestoreLogger();
+
+        internal static ILogger Logger
+        {
+            get => _logger;
+            set
+            {
+                if (_logger is PrestoreLogger pre)
+                {
+                    pre.WriteTo(value);  //将预存日志写入新日志组件
+                    _logger = value;
+                }
+            }
+        }
+
         /// <summary>
         /// 创建一个 <seealso cref="IServiceCollection"/>
         /// </summary>

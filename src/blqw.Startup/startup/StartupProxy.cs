@@ -79,25 +79,23 @@ namespace blqw
             {
                 var p = _configureServices.GetParameters();
                 var obj = _configureServices.IsStatic ? null : SetupInstance;
-                Logger?.LogDebug(new EventId(2, "ConfigureServices"), StartupType.FullName + " 开始配置服务");
+                Logger.Log("配置服务:" + StartupType.FullName);
                 if (p.Length == 0)
                 {
                     _configureServices.Invoke(obj, null);
-                    Logger?.LogDebug(new EventId(2, "ConfigureServices"), StartupType.FullName + " 配置服务完成");
                 }
                 else if (p.Length == 1 && typeof(IServiceCollection).IsAssignableFrom(p[0].ParameterType))
                 {
                     _configureServices.Invoke(obj, new object[] { services });
-                    Logger?.LogDebug(new EventId(2, "ConfigureServices"), StartupType.FullName + " 配置服务完成");
                 }
                 else
                 {
-                    Logger?.LogError(new EventId(2, "ConfigureServices"), new Exception("ConfigureServices 方法签名错误"), StartupType.FullName + " 配置服务失败");
+                    Logger.Error(null, StartupType.FullName + " 配置服务失败:ConfigureServices 方法签名错误");
                 }
             }
             catch (Exception ex)
             {
-                Logger?.LogError(new EventId(2, "ConfigureServices"), ex, StartupType.FullName + " 配置服务失败");
+                Logger.Error(ex, StartupType.FullName + " 配置服务失败");
             }
         }
 
@@ -111,18 +109,16 @@ namespace blqw
             {
                 return;
             }
-
             try
             {
-                Logger?.LogDebug(new EventId(2, "Configure"), StartupType.FullName + " 开始安装服务");
+                Logger.Log("安装服务:" + StartupType.FullName);
                 var obj = _configure.IsStatic ? null : SetupInstance;
                 var args = _configure.GetParameters().Select(x => serviceProvider.GetParameterValue(_configure, x)).ToArray();
                 _configure.Invoke(obj, args);
-                Logger?.LogDebug(new EventId(2, "Configure"), StartupType.FullName + " 安装服务完成");
             }
             catch (Exception ex)
             {
-                Logger?.LogError(new EventId(2, "Configure"), ex, StartupType.FullName + " 安装服务失败");
+                Logger.Error(ex, StartupType.FullName + " 安装服务失败");
             }
         }
     }

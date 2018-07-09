@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.CodeDom.Compiler;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
@@ -31,7 +32,7 @@ namespace demo
                     .BuildServiceProvider()             //编译服务
                     .Configure();                       //安装服务
 
-            Console.WriteLine("hello world");
+            Console.WriteLine("Console.WriteLine 输出到日志 0-9");
             for (var i = 0; i < 10; i++)
             {
                 Console.WriteLine(i);
@@ -64,17 +65,16 @@ namespace xxx
         public static void Configure(IServiceProvider provider)
         {
             var service4 = provider.GetNamedService<Func<object, string>>("tojson");
-            Console.WriteLine(service4(null) == "null");
+            Debug.Assert(service4(null) == "null");
 
             var service1 = provider.GetRequiredService<Func<string, string>>();
-            Console.WriteLine(service1("xx") == "xx_abc");
+            Debug.Assert(service1("xx") == "xx_abc");
 
             var service2 = provider.GetRequiredNamedService<string>("blqw");
-            Console.WriteLine(service2 == "冰麟轻武");
+            Debug.Assert(service2 == "冰麟轻武");
 
             var service3 = provider.GetRequiredNamedService<int>("blqw");
-            Console.WriteLine(service3 == 123456);
-
+            Debug.Assert(service3 == 123456);
         }
     }
 }

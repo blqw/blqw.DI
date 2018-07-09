@@ -25,47 +25,18 @@ namespace blqw
 
         public IDisposable BeginScope<TState>(TState state)
         {
-            _writer.WriteLine($"{GetIndent()}{GetString(state)}");
+            var str = GetString(state);
+            _writer.WriteLine($"{GetIndent()}┏  {str}");
             var indent = _indent;
             Interlocked.Increment(ref _indent);
-            return new EndScope(this, indent);
+            return new EndScope(this, indent, str);
         }
 
-        private string GetString(object state)
+        private void Unindent(int indent, string str)
         {
-            switch (state)
-            {
-                case ILogFormattable a:
-                    Exception ex = null;
-                    return a.ToString(ref ex, null);
-                case IFormattable b:
-                    return b.ToString(null, null);
-                case IConvertible c:
-                    return c.ToString(null);
-                default:
-                    break;
-            }
-            return state.GetType() + " : " + state.ToString();
-        }
-
-        private string GetString(object state, ref Exception exception)
-        {
-            switch (state)
-            {
-                case ILogFormattable a:
-                    return a.ToString(ref exception, null);
-                case IFormattable b:
-                    return b.ToString(null, null);
-                case IConvertible c:
-                    return c.ToString(null);
-                default:
-                    break;
-            }
-            return $"{state.ToString()}({state.GetType()})";
-        }
-
-        private void Unindent(int indent) =>
             Interlocked.CompareExchange(ref _indent, indent, indent + 1);
+            _writer.WriteLine($"{GetIndent()}┗");
+        }
 
         public bool IsEnabled(LogLevel logLevel) => true;
 
@@ -76,14 +47,14 @@ namespace blqw
                 //过滤由控制台输出到ILogger的日志
                 return;
             }
-            var e = GetEventString(eventId);
+            var e = GetString(eventId);
             if (formatter != null)
             {
-                _writer.WriteLine($"{GetIndent()}{GetString(logLevel)}{e} : {formatter(state, exception)}");
+                _writer.WriteLine($"{GetIndent()}{GetString(logLevel)} : {formatter(state, exception)}{e}");
             }
             else
             {
-                _writer.WriteLine($"{GetIndent()}{GetString(logLevel)}{e} : {GetString(state, ref exception)}");
+                _writer.WriteLine($"{GetIndent()}{GetString(logLevel)} : {GetString(state, ref exception)}{e}");
                 //循环输出异常
                 while (exception != null)
                 {
@@ -108,7 +79,7 @@ namespace blqw
         private int _indent = 0;
 
         // 生成1~10个空格字符串的缩进
-        private readonly string[] _indentStrings = Enumerable.Range(0, 10).Select(x => new string(' ', x * 4)).ToArray();
+        private readonly string[] _indentStrings = Enumerable.Range(0, 10).Select(x => string.Concat(Enumerable.Range(0, x).Select(y => "┃   "))).ToArray();
 
         private readonly TextWriter _writer;
 
@@ -117,11 +88,11 @@ namespace blqw
         {
             var time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff ");
             var indent = _indent;
-            return indent <= 0 ? time : time + (_indentStrings.ElementAtOrDefault(indent) ?? new string(' ', indent * 4));
+            return indent <= 0 ? time : time + (_indentStrings.ElementAtOrDefault(indent) ?? string.Concat(Enumerable.Range(0, indent).Select(y => "┃   ")));
         }
 
         // 获取日志等级的字符串
-        private string GetString(LogLevel logLevel)
+        private static string GetString(LogLevel logLevel)
         {
             switch (logLevel)
             {
@@ -136,8 +107,40 @@ namespace blqw
             }
         }
 
+        private static string GetString(object state)
+        {
+            switch (state)
+            {
+                case ILogFormattable a:
+                    Exception ex = null;
+                    return a.ToString(ref ex, null);
+                case IFormattable b:
+                    return b.ToString(null, null);
+                case IConvertible c:
+                    return c.ToString(null);
+                default:
+                    break;
+            }
+            return state.GetType() + " : " + state.ToString();
+        }
+
+        private static string GetString(object state, ref Exception exception)
+        {
+            switch (state)
+            {
+                case ILogFormattable a:
+                    return a.ToString(ref exception, null);
+                case IFormattable b:
+                    return b.ToString(null, null);
+                case IConvertible c:
+                    return c.ToString(null);
+                default:
+                    break;
+            }
+            return $"{state.ToString()}({state.GetType()})";
+        }
         // 获取事件的字符串
-        private static string GetEventString(EventId eventId)
+        private static string GetString(EventId eventId)
         {
             if (eventId.Id == 0)
             {
@@ -145,7 +148,7 @@ namespace blqw
             }
             else
             {
-                return $" - [{eventId.Id}]{eventId.Name}";
+                return $" ({eventId.Name}:{eventId.Id})";
             }
         }
 
@@ -153,17 +156,19 @@ namespace blqw
         class EndScope : IDisposable
         {
             private TextWriterLogger _logger;
+            private readonly string _str;
 
-            public EndScope(TextWriterLogger consoleLogger, int indent)
+            public EndScope(TextWriterLogger consoleLogger, int indent, string str)
             {
                 _logger = consoleLogger;
                 Indent = indent;
+                _str = str;
             }
 
             public int Indent { get; }
 
             // 取消缩进
-            public void Dispose() => _logger.Unindent(Indent);
+            public void Dispose() => _logger.Unindent(Indent, _str);
         }
     }
 }

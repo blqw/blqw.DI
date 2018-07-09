@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
@@ -14,6 +15,19 @@ namespace blqw
     /// </summary>
     public static class LogExtensions
     {
+        private static string GetEventName(string path, string member)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return member?.Trim();
+            }
+            if (string.IsNullOrWhiteSpace(member))
+            {
+                return path?.Trim();
+            }
+            return Path.GetFileNameWithoutExtension(path.Trim()) + "." + member.Trim();
+        }
+
         /// <summary>
         /// 标准日志输出
         /// </summary>
@@ -22,7 +36,7 @@ namespace blqw
                                 [CallerMemberName] string memberName = "",
                                 [CallerFilePath] string sourceFilePath = "",
                                 [CallerLineNumber] int sourceLineNumber = 0)
-                => (logger ?? ConsoleLogger.Instance).Log(logLevel, new EventId(sourceLineNumber, memberName), messageOrObject, exception, null);
+                => (logger ?? ConsoleLogger.Instance).Log(logLevel, new EventId(sourceLineNumber, GetEventName(sourceFilePath, memberName)), messageOrObject, exception, null);
 
         /// <summary>
         /// 错误日志输出
@@ -32,7 +46,7 @@ namespace blqw
                                 [CallerMemberName] string memberName = "",
                                 [CallerFilePath] string sourceFilePath = "",
                                 [CallerLineNumber] int sourceLineNumber = 0)
-                => (logger ?? ConsoleLogger.Instance).Log(LogLevel.Error, new EventId(sourceLineNumber, memberName), messageOrObject, exception, null);
+                => (logger ?? ConsoleLogger.Instance).Log(LogLevel.Error, new EventId(sourceLineNumber, GetEventName(sourceFilePath, memberName)), messageOrObject, exception, null);
 
         /// <summary>
         /// 严重错误日志输出
@@ -42,7 +56,7 @@ namespace blqw
                                 [CallerMemberName] string memberName = "",
                                 [CallerFilePath] string sourceFilePath = "",
                                 [CallerLineNumber] int sourceLineNumber = 0)
-                => (logger ?? ConsoleLogger.Instance).Log(LogLevel.Critical, new EventId(sourceLineNumber, memberName), messageOrObject, exception, null);
+                => (logger ?? ConsoleLogger.Instance).Log(LogLevel.Critical, new EventId(sourceLineNumber, GetEventName(sourceFilePath, memberName)), messageOrObject, exception, null);
 
         /// <summary>
         /// 标准日志输出
@@ -52,7 +66,7 @@ namespace blqw
                                 [CallerMemberName] string memberName = "",
                                 [CallerFilePath] string sourceFilePath = "",
                                 [CallerLineNumber] int sourceLineNumber = 0)
-                => (logger ?? ConsoleLogger.Instance).Log(LogLevel.Trace, new EventId(sourceLineNumber, memberName), messageOrObject, exception, null);
+                => (logger ?? ConsoleLogger.Instance).Log(LogLevel.Trace, new EventId(sourceLineNumber, GetEventName(sourceFilePath, memberName)), messageOrObject, exception, null);
 
         /// <summary>
         /// 调试日志输出
@@ -62,7 +76,7 @@ namespace blqw
                                 [CallerMemberName] string memberName = "",
                                 [CallerFilePath] string sourceFilePath = "",
                                 [CallerLineNumber] int sourceLineNumber = 0)
-                => (logger ?? ConsoleLogger.Instance).Log(LogLevel.Debug, new EventId(sourceLineNumber, memberName), messageOrObject, exception, null);
+                => (logger ?? ConsoleLogger.Instance).Log(LogLevel.Debug, new EventId(sourceLineNumber, GetEventName(sourceFilePath, memberName)), messageOrObject, exception, null);
 
         /// <summary>
         /// 普通信息日志输出
@@ -72,7 +86,7 @@ namespace blqw
                                 [CallerMemberName] string memberName = "",
                                 [CallerFilePath] string sourceFilePath = "",
                                 [CallerLineNumber] int sourceLineNumber = 0)
-                => (logger ?? ConsoleLogger.Instance).Log(LogLevel.Information, new EventId(sourceLineNumber, memberName), messageOrObject, exception, null);
+                => (logger ?? ConsoleLogger.Instance).Log(LogLevel.Information, new EventId(sourceLineNumber, GetEventName(sourceFilePath, memberName)), messageOrObject, exception, null);
 
         /// <summary>
         /// 警告日志输出
@@ -82,7 +96,7 @@ namespace blqw
                                 [CallerMemberName] string memberName = "",
                                 [CallerFilePath] string sourceFilePath = "",
                                 [CallerLineNumber] int sourceLineNumber = 0)
-                => (logger ?? ConsoleLogger.Instance).Log(LogLevel.Warning, new EventId(sourceLineNumber, memberName), messageOrObject, exception, null);
+                => (logger ?? ConsoleLogger.Instance).Log(LogLevel.Warning, new EventId(sourceLineNumber, GetEventName(sourceFilePath, memberName)), messageOrObject, exception, null);
 
         /// <summary>
         /// 如果目标实例中 Logger 属性为空, 则设置为指定的日志组件
@@ -120,7 +134,7 @@ namespace blqw
             {
                 return services;
             }
-            return services.AddSingleton(ConsoleLogger.Instance);
+            return services.AddSingleton<ILogger>(ConsoleLogger.Instance);
         }
 
         /// <summary>

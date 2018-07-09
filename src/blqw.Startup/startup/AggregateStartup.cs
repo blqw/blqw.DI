@@ -58,15 +58,15 @@ namespace blqw
             {
                 throw new ArgumentNullException(nameof(startups));
             }
-            Logger = new PrestoreLogger();
-            foreach (var startup in startups)
+            Logger = Startup.Logger;
+            _startups = startups.ToList();
+            foreach (var startup in _startups)
             {
                 if (startup is ILoggable loggable && loggable.Logger == null)
                 {
                     loggable.Logger = Logger;
                 }
             }
-            _startups = startups.ToList();
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace blqw
                 }
                 catch (Exception ex)
                 {
-                    _logger?.Error(ex, x);
+                    _logger.Error(ex, x);
                 }
             });
         }
@@ -105,7 +105,7 @@ namespace blqw
                 }
                 catch (Exception ex)
                 {
-                    _logger?.Error(ex, x);
+                    _logger.Error(ex, x);
                 }
             });
         }

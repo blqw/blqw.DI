@@ -29,7 +29,7 @@ namespace blqw
             }
             catch (Exception ex)
             {
-                Logger?.Error(ex, ConfigureServices?.Method?.Name);
+                Logger.Error(ex, ConfigureServices?.Method?.Name);
             }
         }
         void IStartup.Configure(IServiceProvider serviceProvider)
@@ -40,7 +40,7 @@ namespace blqw
             }
             catch (Exception ex)
             {
-                Logger?.Error(ex, Configure?.Method?.Name);
+                Logger.Error(ex, Configure?.Method?.Name);
             }
         }
     }

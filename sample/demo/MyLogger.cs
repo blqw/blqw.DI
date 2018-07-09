@@ -18,7 +18,7 @@ namespace demo
         {
             if (formatter == null)
             {
-                File.AppendAllText(_file, new { logLevel, eventId, state, exception }.ToString() + Environment.NewLine);
+                File.AppendAllText(_file, new { logLevel, @event = eventId.Name + ":" + eventId.Id, state, exception }.ToString() + Environment.NewLine);
             }
             else if (state is Type t && t == typeof(Console))
             {
@@ -26,7 +26,7 @@ namespace demo
             }
             else
             {
-                File.AppendAllText(_file, new { logLevel, eventId, formatter = formatter(state, exception) }.ToString() + Environment.NewLine);
+                File.AppendAllText(_file, new { logLevel, @event = eventId.Name + ":" + eventId.Id, formatter = formatter(state, exception) }.ToString() + Environment.NewLine);
             }
         }
 

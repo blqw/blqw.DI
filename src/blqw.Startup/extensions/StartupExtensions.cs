@@ -20,7 +20,7 @@ namespace blqw
         /// </summary>
         /// <param name="assembly"></param>
         public static IEnumerable<Type> FindStartupTypesByAttribute(this Assembly assembly)
-            => AssemblyStartupAttribute.FindTypes(assembly, null);
+            => AssemblyStartupAttribute.FindTypes(assembly, Startup.Logger);
 
         /// <summary>
         /// 根据 <seealso cref="AssemblyStartupAttribute"/> 特性查找启动类
@@ -28,10 +28,12 @@ namespace blqw
         /// <param name="assembly"></param>
         public static IEnumerable<Type> FindStartupTypesByAttribute(this IEnumerable<Assembly> assemblies)
         {
-            LogExtensions.Log(null, "根据特性 [assembly: AssemblyStartup] 查找启动器类");
-            var types = assemblies.SelectMany(FindStartupTypesByAttribute).ToList();
-            LogExtensions.Log(null, $"启动器查找完成, 共 {types.Count} 个");
-            return types;
+            using (Startup.Logger.BeginScope("根据特性 [assembly: AssemblyStartup] 查找启动器类"))
+            {
+                var types = assemblies.SelectMany(FindStartupTypesByAttribute).ToList();
+                Startup.Logger.Log($"启动器查找完成, 共 {types.Count} 个");
+                return types;
+            }
         }
 
         /// <summary>
@@ -67,10 +69,12 @@ namespace blqw
         /// </summary>
         public static IEnumerable<Type> FindStartupTypesByName(this IEnumerable<Assembly> assemblies)
         {
-            LogExtensions.Log(null, "根据名称 (Class.Name == \"Startup\") 查找启动器类 ");
-            var types = assemblies.SelectMany(FindStartupTypesByName).ToList();
-            LogExtensions.Log(null, $"启动器查找完成, 共 {types.Count} 个");
-            return types;
+            using (Startup.Logger.BeginScope("根据名称 (Class.Name == \"Startup\") 查找启动器类"))
+            {
+                var types = assemblies.SelectMany(FindStartupTypesByName).ToList();
+                Startup.Logger.Log($"启动器查找完成, 共 {types.Count} 个");
+                return types;
+            }
         }
 
         /// <summary>
@@ -100,7 +104,10 @@ namespace blqw
                 return services;
             }
 
-            startup.ConfigureServices(services);
+            using (Startup.Logger.BeginScope("配置服务"))
+            {
+                startup.SetLoggerIfAbsent(Startup.Logger).ConfigureServices(services);
+            }
             services.AddSingleton(startup);
             return services;
         }
@@ -140,15 +147,13 @@ namespace blqw
 
             //获取日志服务
             var logger = serviceProvider.GetLogger();
-
-            using (logger.BeginScope(typeof(Startup)))
+            Startup.Logger = logger;
+            using (logger.BeginScope("安装服务"))
             {
-                logger.Info("开始安装服务");
                 foreach (var startup in startups)
                 {
                     startup.SetLoggerIfAbsent(logger).Configure(serviceProvider);
                 }
-                logger.Info("服务安装完成");
             }
         }
     }
