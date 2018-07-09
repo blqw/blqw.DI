@@ -26,7 +26,7 @@ namespace blqw
         public IDisposable BeginScope<TState>(TState state)
         {
             var str = GetString(state);
-            _writer.WriteLine($"{GetIndent()}┏  {str}");
+            _writer.WriteLine($"{Time}【Begin】{GetIndent()}┏  {str}");
             var indent = _indent;
             Interlocked.Increment(ref _indent);
             return new EndScope(this, indent, str);
@@ -35,7 +35,7 @@ namespace blqw
         private void Unindent(int indent, string str)
         {
             Interlocked.CompareExchange(ref _indent, indent, indent + 1);
-            _writer.WriteLine($"{GetIndent()}┗");
+            _writer.WriteLine($"{Time}【 End 】{GetIndent()}┗");
         }
 
         public bool IsEnabled(LogLevel logLevel) => true;
@@ -50,15 +50,15 @@ namespace blqw
             var e = GetString(eventId);
             if (formatter != null)
             {
-                _writer.WriteLine($"{GetIndent()}{GetString(logLevel)} : {formatter(state, exception)}{e}");
+                _writer.WriteLine($"{Time}{GetString(logLevel)}{GetIndent()} {formatter(state, exception)}{e}");
             }
             else
             {
-                _writer.WriteLine($"{GetIndent()}{GetString(logLevel)} : {GetString(state, ref exception)}{e}");
+                _writer.WriteLine($"{Time}{GetString(logLevel)}{GetIndent()} {GetString(state, ref exception)}{e}");
                 //循环输出异常
                 while (exception != null)
                 {
-                    _writer.WriteLine(GetIndent() + exception.ToString());
+                    _writer.WriteLine(Time + GetIndent() + exception.ToString());
                     // 获取基础异常
                     var ex = exception.GetBaseException();
                     // 基础异常获取失败则获取 内部异常
@@ -83,12 +83,13 @@ namespace blqw
 
         private readonly TextWriter _writer;
 
+        private string Time => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff ");
+
         // 输入缩进
         string GetIndent()
         {
-            var time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff ");
             var indent = _indent;
-            return indent <= 0 ? time : time + (_indentStrings.ElementAtOrDefault(indent) ?? string.Concat(Enumerable.Range(0, indent).Select(y => "┃   ")));
+            return indent <= 0 ? "" : _indentStrings.ElementAtOrDefault(indent) ?? string.Concat(Enumerable.Range(0, indent).Select(y => "┃   "));
         }
 
         // 获取日志等级的字符串

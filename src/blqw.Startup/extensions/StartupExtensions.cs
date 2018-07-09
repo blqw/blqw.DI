@@ -28,12 +28,13 @@ namespace blqw
         /// <param name="assembly"></param>
         public static IEnumerable<Type> FindStartupTypesByAttribute(this IEnumerable<Assembly> assemblies)
         {
+            List<Type> types;
             using (Startup.Logger.BeginScope("根据特性 [assembly: AssemblyStartup] 查找启动器类"))
             {
-                var types = assemblies.SelectMany(FindStartupTypesByAttribute).ToList();
-                Startup.Logger.Log($"启动器查找完成, 共 {types.Count} 个");
-                return types;
+                types = assemblies.SelectMany(FindStartupTypesByAttribute).ToList();
             }
+            Startup.Logger.Log($"启动器查找完成, 共 {types.Count} 个");
+            return types;
         }
 
         /// <summary>
@@ -53,15 +54,29 @@ namespace blqw
             {
                 return Type.EmptyTypes;
             }
+
+            var assName = assembly.GetName();
+            List<Type> types;
             try
             {
-                return assembly.DefinedTypes.Where(x => x.Name == "Startup").ToList();
+                types = assembly.DefinedTypes.Where(x => x.Name == "Startup").ToList<Type>();
             }
             catch (ReflectionTypeLoadException ex)
             {
-                LogExtensions.Log(null, LogLevel.Warning, assembly, ex);
-                return ex.Types.Where(x => x.Name == "Startup").ToList();
+                Startup.Logger.Log(LogLevel.Warning, assembly, ex);
+                types = ex.Types.Where(x => x.Name == "Startup").ToList();
             }
+            if (types.Count > 0)
+            {
+                using (Startup.Logger.BeginScope($"程序集:{assName?.Name} {assName?.Version}"))
+                {
+                    foreach (var type in types)
+                    {
+                        Startup.Logger.Log(type.FullName);
+                    }
+                }
+            }
+            return types;
         }
 
         /// <summary>
@@ -69,12 +84,17 @@ namespace blqw
         /// </summary>
         public static IEnumerable<Type> FindStartupTypesByName(this IEnumerable<Assembly> assemblies)
         {
+            List<Type> types;
             using (Startup.Logger.BeginScope("根据名称 (Class.Name == \"Startup\") 查找启动器类"))
             {
-                var types = assemblies.SelectMany(FindStartupTypesByName).ToList();
-                Startup.Logger.Log($"启动器查找完成, 共 {types.Count} 个");
-                return types;
+                types = assemblies.SelectMany(FindStartupTypesByName).ToList();
+                foreach (var type in types)
+                {
+                    Startup.Logger.Log(type.FullName);
+                }
             }
+            Startup.Logger.Log($"启动器查找完成, 共 {types.Count} 个");
+            return types;
         }
 
         /// <summary>

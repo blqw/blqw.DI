@@ -29,6 +29,7 @@ namespace demo
                     .AddConsoleLogger()
                     .ConsoleForwardingToLogger()
                     .ConfigureServices()
+                    .ConfigureServices(AppDomain.CurrentDomain.FindStartupTypesByName())
                     .BuildServiceProvider()             //编译服务
                     .Configure();                       //安装服务
 
