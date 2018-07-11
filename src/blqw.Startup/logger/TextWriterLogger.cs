@@ -34,26 +34,16 @@ namespace blqw
         protected const LogLevel SCOPE_BEGIN = (LogLevel)(-1);
         protected const LogLevel SCOPE_END = (LogLevel)(int.MinValue);
 
-        public virtual IDisposable BeginScope<TState>(TState state)
-        {
-            ThrowIfDisposed();
-            var str = GetString(state);
-            Writer.WriteLine($"{Time} {GetString(SCOPE_BEGIN)}{GetIndent()}┏  {str}");
-            var indent = _indent;
-            Interlocked.Increment(ref _indent);
-            return new EndScope(this, indent, str);
-        }
+        public virtual bool IsEnabled(LogLevel logLevel) => LogLevel <= logLevel;
 
-        private void Unindent(int indent, string str)
-        {
-            Interlocked.CompareExchange(ref _indent, indent, indent + 1);
-            Writer?.WriteLine($"{Time} {GetString(SCOPE_END)}{GetIndent()}┗");
-        }
-
-        public virtual bool IsEnabled(LogLevel logLevel) => true;
+        public virtual LogLevel LogLevel { get; protected set; } = 0;
 
         public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
+            if (!IsEnabled(logLevel))
+            {
+                return;
+            }
             ThrowIfDisposed();
             var e = GetString(eventId);
             if (formatter != null)
@@ -79,8 +69,28 @@ namespace blqw
                         }
                         ex = exception.InnerException;
                     }
+                    exception = ex;
                 }
             }
+            Writer.Flush();
+        }
+
+        public virtual IDisposable BeginScope<TState>(TState state)
+        {
+            ThrowIfDisposed();
+            var str = GetString(state);
+            Writer.WriteLine($"{Time} {GetString(SCOPE_BEGIN)}{GetIndent()}┏  {str}");
+            var indent = _indent;
+            Interlocked.Increment(ref _indent);
+            Writer.Flush();
+            return new ScopeEnds(this, indent, str);
+        }
+
+        private void Unindent(int indent, string str)
+        {
+            Interlocked.CompareExchange(ref _indent, indent, indent + 1);
+            Writer?.WriteLine($"{Time} {GetString(SCOPE_END)}{GetIndent()}┗");
+            Writer?.Flush();
         }
 
         // 当前缩进
@@ -93,17 +103,28 @@ namespace blqw
 
         protected TextWriter Writer { get; private set; }
 
-        // 输入缩进
+        /// <summary>
+        /// 获取缩进字符串
+        /// </summary>
+        /// <returns></returns>
         protected virtual string GetIndent()
         {
             var indent = _indent;
             return indent <= 0 ? "" : _indentStrings.ElementAtOrDefault(indent) ?? string.Concat(Enumerable.Range(0, indent).Select(y => "┃   "));
         }
 
-        // 获取日志等级的字符串
+        /// <summary>
+        /// 获取时间对应的字符串
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
         protected virtual string GetString(DateTime time) => time.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-        // 获取日志等级的字符串
+        /// <summary>
+        /// 获取日志等级的字符串
+        /// </summary>
+        /// <param name="logLevel"></param>
+        /// <returns></returns>
         protected virtual string GetString(LogLevel logLevel)
         {
             switch (logLevel)
@@ -127,7 +148,7 @@ namespace blqw
             return GetString(state,ref _);
         }
         /// <summary>
-        /// 获得
+        /// 获得 <see cref="state" /> 对象的字符串
         /// </summary>
         /// <param name="state"></param>
         /// <param name="exception"></param>
@@ -142,10 +163,11 @@ namespace blqw
                     return b.ToString(null, null);
                 case IConvertible c:
                     return c.ToString(null);
+                case null:
+                    return "<null>";
                 default:
-                    break;
+                    return $"{state.ToString()}({state.GetType()})";
             }
-            return $"{state.ToString()}({state.GetType()})";
         }
         /// <summary>
         /// 获取事件的字符串
@@ -165,12 +187,12 @@ namespace blqw
         }
 
         // 取消缩进对象
-        class EndScope : IDisposable
+        class ScopeEnds : IDisposable
         {
             private TextWriterLogger _logger;
             private readonly string _str;
 
-            public EndScope(TextWriterLogger consoleLogger, int indent, string str)
+            public ScopeEnds(TextWriterLogger consoleLogger, int indent, string str)
             {
                 _logger = consoleLogger;
                 Indent = indent;
