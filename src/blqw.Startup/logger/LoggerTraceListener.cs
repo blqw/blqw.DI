@@ -12,7 +12,7 @@ namespace blqw
 
         public ILogger Logger { get; }
 
-        public override void Write(string message) => Write(message);
+        public override void Write(string message) => WriteLine(message);
         public override void WriteLine(string message) => Logger.Log<string>(LogLevel.Trace, 0, message, null, null);
     }
 }

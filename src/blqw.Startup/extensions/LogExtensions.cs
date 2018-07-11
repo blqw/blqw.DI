@@ -198,7 +198,7 @@ namespace blqw
         /// </summary>
         /// <param name="logger"></param>
         public static void WatchConsole(this ILogger logger) =>
-             Console.SetOut(new ConsoleOutProxy(logger));
+             Console.SetOut(new ConsoleForwarder(logger));
 
         /// <summary>
         /// 观察控制台输出，并转发到指定的日志组件

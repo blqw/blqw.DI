@@ -11,13 +11,18 @@ using System.Threading.Tasks;
 
 namespace blqw
 {
-    sealed class ConsoleOutProxy : TextWriter, ILogger, IProxy<TextWriter>
+    /// <summary>
+    /// 控制台内容转发器
+    /// </summary>
+    sealed class ConsoleForwarder : TextWriter, ILogger, IProxy<TextWriter>
     {
-        public static readonly Type CONSOLE = typeof(Console);
+        private static readonly Type LOG_STATE = typeof(Console);
+
+        public static bool IsForwarding(object state) => ReferenceEquals(state, LOG_STATE);
 
         private ILogger _logger;
 
-        public ConsoleOutProxy(ILogger logger)
+        public ConsoleForwarder(ILogger logger)
         {
             _logger = logger.GetActualObject();
             BaseWriter = Console.Out.GetActualObject();
@@ -65,7 +70,7 @@ namespace blqw
             }
             if (_logger?.IsEnabled(LogLevel.Trace) == true)
             {
-                _logger.Log(LogLevel.Trace, 0, CONSOLE, null, (a, b) => value.ToString(FormatProvider));
+                _logger.Log(LogLevel.Trace, 0, LOG_STATE, null, (a, b) => value.ToString(FormatProvider));
             }
             return BaseWriter;
         }
@@ -114,7 +119,7 @@ namespace blqw
                 switch (value)
                 {
                     case Exception ex:
-                        _logger.Log(LogLevel.Trace, 0, CONSOLE, ex, (a, b) => (ex.GetBaseException() ?? ex)?.ToString());
+                        _logger.Log(LogLevel.Trace, 0, LOG_STATE, ex, (a, b) => (ex.GetBaseException() ?? ex)?.ToString());
                         break;
                     case IFormattable f:
                         return WriteCore(f.ToString(null, FormatProvider));
@@ -135,7 +140,7 @@ namespace blqw
             }
             if (_logger?.IsEnabled(LogLevel.Trace) == true)
             {
-                _logger.Log(LogLevel.Trace, 0, CONSOLE, null, (a, b) => value ?? string.Empty);
+                _logger.Log(LogLevel.Trace, 0, LOG_STATE, null, (a, b) => value ?? string.Empty);
             }
             return BaseWriter;
         }
@@ -191,7 +196,7 @@ namespace blqw
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            if (ReferenceEquals(state, CONSOLE))
+            if (ReferenceEquals(state, LOG_STATE))
             {
                 //过滤由控制台输出到ILogger的日志
                 return;
@@ -283,9 +288,9 @@ namespace blqw
         // 取消缩进对象
         class EndScope : IDisposable
         {
-            private ConsoleOutProxy _consoleLogger;
+            private ConsoleForwarder _consoleLogger;
 
-            public EndScope(ConsoleOutProxy consoleLogger, int indent)
+            public EndScope(ConsoleForwarder consoleLogger, int indent)
             {
                 _consoleLogger = consoleLogger;
                 Indent = indent;

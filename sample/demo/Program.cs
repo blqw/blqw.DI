@@ -30,7 +30,7 @@ namespace demo
                     .ConsoleForwardingToLogger()    //使控制台输出内容(Console.Wirte)转发到日志
                     .TraceForwardingToLogger()      //使Trace输出内容(Trace.Wirte等)转发到日志
                     .ConfigureServices()            //添加 AssemblyStartupAttribute 特性标注的启动类
-                    //.ConfigureServices(AppDomain.CurrentDomain.FindStartupTypesByName()) //搜索整个应用程序域中名称为"Startup"的启动类，忽略访问修饰符
+                                                    //.ConfigureServices(AppDomain.CurrentDomain.FindStartupTypesByName()) //搜索整个应用程序域中名称为"Startup"的启动类，忽略访问修饰符
                     .BuildServiceProvider()             //编译服务
                     .Configure();                       //安装服务
 
@@ -45,6 +45,16 @@ namespace demo
             {
                 Trace.WriteLine(i);
             }
+
+            try
+            {
+                ((object)null).ToString();
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("测试 异常:" + ex.ToString());
+            }
+            Console.ReadKey();
         }
     }
 }

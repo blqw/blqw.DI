@@ -11,7 +11,7 @@ namespace blqw
     /// <summary>
     /// 将日志输出到指定的 <seealso cref="TextWriter"/>
     /// </summary>
-    class TextWriterLogger : ILogger
+    public class TextWriterLogger : ILogger, IDisposable
     {
         public TextWriterLogger(TextWriter writer)
         {
@@ -20,13 +20,25 @@ namespace blqw
                 throw new ArgumentNullException(nameof(writer));
             }
 
-            _writer = writer.GetActualObject();
+            Writer = writer.GetActualObject();
         }
 
-        public IDisposable BeginScope<TState>(TState state)
+        protected void ThrowIfDisposed()
         {
+            if (Writer == null)
+            {
+                throw new ObjectDisposedException(GetType().FullName);
+            }
+        }
+
+        protected const LogLevel SCOPE_BEGIN = (LogLevel)(-1);
+        protected const LogLevel SCOPE_END = (LogLevel)(int.MinValue);
+
+        public virtual IDisposable BeginScope<TState>(TState state)
+        {
+            ThrowIfDisposed();
             var str = GetString(state);
-            _writer.WriteLine($"{Time}【Begin】{GetIndent()}┏  {str}");
+            Writer.WriteLine($"{Time} {GetString(SCOPE_BEGIN)}{GetIndent()}┏  {str}");
             var indent = _indent;
             Interlocked.Increment(ref _indent);
             return new EndScope(this, indent, str);
@@ -35,30 +47,26 @@ namespace blqw
         private void Unindent(int indent, string str)
         {
             Interlocked.CompareExchange(ref _indent, indent, indent + 1);
-            _writer.WriteLine($"{Time}【 End 】{GetIndent()}┗");
+            Writer?.WriteLine($"{Time} {GetString(SCOPE_END)}{GetIndent()}┗");
         }
 
-        public bool IsEnabled(LogLevel logLevel) => true;
+        public virtual bool IsEnabled(LogLevel logLevel) => true;
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            if (ReferenceEquals(state, ConsoleOutProxy.CONSOLE))
-            {
-                //过滤由控制台输出到ILogger的日志
-                return;
-            }
+            ThrowIfDisposed();
             var e = GetString(eventId);
             if (formatter != null)
             {
-                _writer.WriteLine($"{Time}{GetString(logLevel)}{GetIndent()} {formatter(state, exception)}{e}");
+                Writer.WriteLine($"{Time} {GetString(logLevel)}{GetIndent()} {formatter(state, exception)}{e}");
             }
             else
             {
-                _writer.WriteLine($"{Time}{GetString(logLevel)}{GetIndent()} {GetString(state, ref exception)}{e}");
+                Writer.WriteLine($"{Time} {GetString(logLevel)}{GetIndent()} {GetString(state, ref exception)}{e}");
                 //循环输出异常
                 while (exception != null)
                 {
-                    _writer.WriteLine(Time + GetIndent() + exception.ToString());
+                    Writer.WriteLine($"{Time} {GetIndent()}{exception.ToString()}");
                     // 获取基础异常
                     var ex = exception.GetBaseException();
                     // 基础异常获取失败则获取 内部异常
@@ -81,19 +89,22 @@ namespace blqw
         // 生成1~10个空格字符串的缩进
         private readonly string[] _indentStrings = Enumerable.Range(0, 10).Select(x => string.Concat(Enumerable.Range(0, x).Select(y => "┃   "))).ToArray();
 
-        private readonly TextWriter _writer;
+        private string Time => GetString(DateTime.Now);
 
-        private string Time => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff ");
+        protected TextWriter Writer { get; private set; }
 
         // 输入缩进
-        string GetIndent()
+        protected virtual string GetIndent()
         {
             var indent = _indent;
             return indent <= 0 ? "" : _indentStrings.ElementAtOrDefault(indent) ?? string.Concat(Enumerable.Range(0, indent).Select(y => "┃   "));
         }
 
         // 获取日志等级的字符串
-        private static string GetString(LogLevel logLevel)
+        protected virtual string GetString(DateTime time) => time.ToString("yyyy-MM-dd HH:mm:ss.fff");
+
+        // 获取日志等级的字符串
+        protected virtual string GetString(LogLevel logLevel)
         {
             switch (logLevel)
             {
@@ -104,28 +115,24 @@ namespace blqw
                 case LogLevel.Error: return "【Error】";
                 case LogLevel.Critical: return "【Criti】";
                 case LogLevel.None: return "【None 】";
+                case SCOPE_BEGIN: return "【Begin】";
+                case SCOPE_END: return "【 End 】";
                 default: return logLevel.ToString();
             }
         }
 
-        private static string GetString(object state)
+        private string GetString(object state)
         {
-            switch (state)
-            {
-                case ILogFormattable a:
-                    Exception ex = null;
-                    return a.ToString(ref ex, null);
-                case IFormattable b:
-                    return b.ToString(null, null);
-                case IConvertible c:
-                    return c.ToString(null);
-                default:
-                    break;
-            }
-            return state.GetType() + " : " + state.ToString();
+            Exception _ = null;
+            return GetString(state,ref _);
         }
-
-        private static string GetString(object state, ref Exception exception)
+        /// <summary>
+        /// 获得
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="exception"></param>
+        /// <returns></returns>
+        protected virtual string GetString(object state, ref Exception exception)
         {
             switch (state)
             {
@@ -140,8 +147,12 @@ namespace blqw
             }
             return $"{state.ToString()}({state.GetType()})";
         }
-        // 获取事件的字符串
-        private static string GetString(EventId eventId)
+        /// <summary>
+        /// 获取事件的字符串
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <returns></returns>
+        protected virtual string GetString(EventId eventId)
         {
             if (eventId.Id == 0)
             {
@@ -170,6 +181,19 @@ namespace blqw
 
             // 取消缩进
             public void Dispose() => _logger.Unindent(Indent, _str);
+        }
+
+        /// <summary>
+        /// 释放 <see cref="TextWriter"/>
+        /// </summary>
+        public virtual void Dispose()
+        {
+            var writer = Writer;
+            Writer = null;
+            if (writer != null)
+            {
+                writer.Dispose();
+            }
         }
     }
 }
