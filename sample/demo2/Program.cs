@@ -1,25 +1,24 @@
-﻿using System.Reflection;
-using System.Security;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ConsoleApp
+namespace demo2
 {
     class Program
     {
         static void Main(string[] args)
         {
-
             var logger = new ServiceCollection()
-                          .AddLogging()
-                          .BuildServiceProvider()
-                          .GetService<ILoggerFactory>()
-                          .CreateLogger("Ordering");
+                                     .AddLogging()
+                                     .BuildServiceProvider()
+                                     .GetService<ILoggerFactory>()
+                                     .AddConsole(true)
+                                     .CreateLogger("Ordering");
 
             using (logger.BeginScope("订单: {ID}", "20160520001"))
             {

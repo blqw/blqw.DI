@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using System;
 
-namespace blqw
+namespace blqw.Logging
 {
     /// <summary>
     /// 控制台日志
     /// </summary>
     class ConsoleLogger : TextWriterLogger
     {
-        public static ConsoleLogger Instance { get; } = new ConsoleLogger();
 
-        private ConsoleLogger()
-            : base(Console.Out)
+        public ConsoleLogger(string categoryName)
+            : base(Console.Out, categoryName)
         {
         }
 

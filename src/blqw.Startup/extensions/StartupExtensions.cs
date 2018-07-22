@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using blqw.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -153,7 +154,7 @@ namespace blqw
         /// 安装服务
         /// </summary>
         /// <param name="serviceProvider"></param>
-        public static void Configure(this IServiceProvider serviceProvider)
+        public static IServiceProvider Configure(this IServiceProvider serviceProvider)
         {
             if (serviceProvider == null)
             {
@@ -162,11 +163,11 @@ namespace blqw
             var startups = serviceProvider.GetServices<IStartup>();
             if (startups == null)
             {
-                return;
+                return serviceProvider;
             }
 
             //获取日志服务
-            var logger = serviceProvider.GetLogger();
+            var logger = serviceProvider.GetLogger(typeof(IStartup));
             Startup.Logger = logger;
             using (logger.BeginScope("安装服务"))
             {
@@ -175,6 +176,7 @@ namespace blqw
                     startup.SetLoggerIfAbsent(logger).Configure(serviceProvider);
                 }
             }
+            return serviceProvider;
         }
     }
 }

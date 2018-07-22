@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace blqw
+namespace blqw.Logging
 {
     /// <summary>
     /// 将日志输出到指定的 <seealso cref="TextWriter"/>
@@ -22,6 +22,8 @@ namespace blqw
 
             Writer = writer.GetActualObject();
         }
+
+        public TextWriterLogger(TextWriter writer, string categoryName) : this(writer) => this.CategoryName = categoryName;
 
         protected void ThrowIfDisposed()
         {
@@ -103,6 +105,8 @@ namespace blqw
 
         protected TextWriter Writer { get; private set; }
 
+        public string CategoryName { get; }
+
         /// <summary>
         /// 获取缩进字符串
         /// </summary>
@@ -145,7 +149,7 @@ namespace blqw
         private string GetString(object state)
         {
             Exception _ = null;
-            return GetString(state,ref _);
+            return GetString(state, ref _);
         }
         /// <summary>
         /// 获得 <see cref="state" /> 对象的字符串
@@ -178,11 +182,11 @@ namespace blqw
         {
             if (eventId.Id == 0)
             {
-                return eventId.Name == null ? "" : " - " + eventId.Name;
+                return eventId.Name ?? CategoryName ?? "";
             }
             else
             {
-                return $" ({eventId.Name}:{eventId.Id})";
+                return $" ({eventId.Name ?? CategoryName ?? "<unknown>"}:{eventId.Id})";
             }
         }
 

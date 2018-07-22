@@ -1,6 +1,7 @@
 ﻿using blqw;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using System;
 using System.CodeDom.Compiler;
 using System.Diagnostics;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 namespace demo
 {
 
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -24,15 +25,32 @@ namespace demo
                 File.Delete("d:\\log.log");
             }
 
-            Startup.CreateServiceCollection()
-                    .AddSingleton<ILogger>(new MyLogger("d:\\log.log")) //添加自定义日志组件
-                    .AddConsoleLogger()             //添加控制台日志
-                    .ConsoleForwardingToLogger()    //使控制台输出内容(Console.Wirte)转发到日志
-                    .TraceForwardingToLogger()      //使Trace输出内容(Trace.Wirte等)转发到日志
-                    .ConfigureServices()            //添加 AssemblyStartupAttribute 特性标注的启动类
-                                                    //.ConfigureServices(AppDomain.CurrentDomain.FindStartupTypesByName()) //搜索整个应用程序域中名称为"Startup"的启动类，忽略访问修饰符
+            var logger = new ServiceCollection()
+                          .AddLogging()
+                          .BuildServiceProvider()
+                          .GetService<ILoggerFactory>()
+                          .AddConsole(true)
+                          .CreateLogger("Ordering");
+
+            using (logger.BeginScope("订单: {ID}", "20160520001"))
+            {
+                logger.LogWarning("商品库存不足(商品ID: {0}, 当前库存:{1}, 订购数量:{2})", "9787121237812", 20, 50);
+                logger.LogError("商品ID录入错误(商品ID: {0})", "9787121235368");
+            }
+
+            var p = Startup.CreateServiceCollection()
+                    //.AddConsoleLogger()             //添加控制台日志
+                    //.ConsoleForwardingToLogger()    //使控制台输出内容(Console.Wirte)转发到日志
+                    //.ConfigureServices(AppDomain.CurrentDomain.FindStartupTypesByName()) //搜索整个应用程序域中名称为"Startup"的启动类，忽略访问修饰符
+                    .ConfigureServices()                //添加 AssemblyStartupAttribute 特性标注的启动类
                     .BuildServiceProvider()             //编译服务
+                    .AddLogging(x =>
+                    {
+                        x.AddConsole(LogLevel.Trace);
+                    })
+                    //.TraceForwardingToLogger()          //使Trace输出内容(Trace.Wirte等)转发到日志
                     .Configure();                       //安装服务
+
 
             Console.WriteLine("Console.WriteLine 输出到日志 0-9");
             for (var i = 0; i < 10; i++)
