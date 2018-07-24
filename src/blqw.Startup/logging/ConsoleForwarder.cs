@@ -14,6 +14,7 @@ namespace blqw
     /// <summary>
     /// 控制台内容转发器
     /// </summary>
+    [Obsolete("废弃", true)]
     sealed class ConsoleForwarder : TextWriter, IProxy<TextWriter>
     {
         private static readonly Type LOG_STATE = typeof(Console);

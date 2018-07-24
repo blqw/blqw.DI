@@ -16,17 +16,17 @@ namespace Microsoft.Extensions.Logging
     /// </summary>
     public static class LogExtensions
     {
-        private static string GetEventName(string path, string member)
+        private static string GetEventName(string path, string member, int line = 0)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
-                return member?.Trim();
+                return member?.Trim() + (line == 0 ? "" : ":" + line);
             }
             if (string.IsNullOrWhiteSpace(member))
             {
-                return path?.Trim();
+                return path?.Trim() + (line == 0 ? "" : ":" + line);
             }
-            return Path.GetFileNameWithoutExtension(path.Trim()) + "." + member.Trim();
+            return Path.GetFileNameWithoutExtension(path.Trim()) + "." + member.Trim() + (line == 0 ? "" : ":" + line);
         }
 
         private static ILogger DefaultLogger { get; } = new ConsoleLogger(null);
@@ -143,30 +143,32 @@ namespace Microsoft.Extensions.Logging
             return serviceProvider;
         }
 
-        /// <summary>
-        /// 控制台内容转发到日志
-        /// </summary>
-        public static IServiceProvider ConsoleForwardingToLogger(this IServiceProvider serviceProvider)
-        {
-            var factory = serviceProvider?.GetService<ILoggerFactory>();
-            if (factory != null)
-            {
-                var categoryName = TypeNameHelper.GetTypeDisplayName(typeof(Console));
-                var logger = factory.CreateLogger(categoryName);
-                WatchConsole(logger);
-            }
-            return serviceProvider;
-        }
+        public static IServiceProvider AddConsoleLogger(this IServiceProvider serviceProvider) =>
+            serviceProvider.With(x => x.GetRequiredService<ILoggerFactory>().AddProvider(ConsoleLogger.LoggerProvider));
+
+        ///// <summary>
+        ///// 控制台内容转发到日志
+        ///// </summary>
+        //public static IServiceProvider ConsoleForwardingToLogger(this IServiceProvider serviceProvider)
+        //{
+        //    var factory = serviceProvider?.GetService<ILoggerFactory>();
+        //    if (factory != null)
+        //    {
+        //        var categoryName = TypeNameHelper.GetTypeDisplayName(typeof(Console));
+        //        var logger = factory.CreateLogger(categoryName);
+        //        WatchConsole(logger);
+        //    }
+        //    return serviceProvider;
+        //}
 
         /// <summary>
         /// 获取日志服务
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        public static ILogger GetLogger(this IServiceProvider serviceProvider, Type type)
+        public static ILogger GetLogger(this IServiceProvider serviceProvider, string categoryName)
         {
             var factory = serviceProvider?.GetService<ILoggerFactory>();
-            var categoryName = TypeNameHelper.GetTypeDisplayName(type);
             if (factory != null)
             {
                 return factory.CreateLogger(categoryName);
@@ -180,8 +182,16 @@ namespace Microsoft.Extensions.Logging
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
+        public static ILogger GetLogger(this IServiceProvider serviceProvider, Type type) =>
+            GetLogger(serviceProvider, TypeNameHelper.GetTypeDisplayName(type));
+
+        /// <summary>
+        /// 获取日志服务
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <returns></returns>
         public static ILogger GetLogger<T>(this IServiceProvider serviceProvider) =>
-            serviceProvider.GetLogger(typeof(T));
+            serviceProvider.GetLogger(TypeNameHelper.GetTypeDisplayName(typeof(T)));
 
         public static IServiceProvider AddLogging(this IServiceProvider serviceProvider, Action<ILoggerFactory> configure)
         {
@@ -197,6 +207,7 @@ namespace Microsoft.Extensions.Logging
         /// 观察控制台输出，并转发到指定的日志组件
         /// </summary>
         /// <param name="logger"></param>
+        [Obsolete("废弃", true)]
         private static void WatchConsole(this ILogger logger) =>
              Console.SetOut(new ConsoleForwarder(logger));
 

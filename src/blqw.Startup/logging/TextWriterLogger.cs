@@ -13,6 +13,9 @@ namespace blqw.Logging
     /// </summary>
     public class TextWriterLogger : ILogger, IDisposable
     {
+        protected const LogLevel SCOPE_BEGIN = (LogLevel)(-1);
+        protected const LogLevel SCOPE_END = (LogLevel)(-2);
+
         public TextWriterLogger(TextWriter writer)
         {
             if (writer == null)
@@ -23,7 +26,7 @@ namespace blqw.Logging
             Writer = writer.GetActualObject();
         }
 
-        public TextWriterLogger(TextWriter writer, string categoryName) : this(writer) => this.CategoryName = categoryName;
+        public TextWriterLogger(TextWriter writer, string categoryName) : this(writer) => CategoryName = categoryName;
 
         protected void ThrowIfDisposed()
         {
@@ -32,9 +35,6 @@ namespace blqw.Logging
                 throw new ObjectDisposedException(GetType().FullName);
             }
         }
-
-        protected const LogLevel SCOPE_BEGIN = (LogLevel)(-1);
-        protected const LogLevel SCOPE_END = (LogLevel)(int.MinValue);
 
         public virtual bool IsEnabled(LogLevel logLevel) => LogLevel <= logLevel;
 
@@ -91,7 +91,7 @@ namespace blqw.Logging
         private void Unindent(int indent, string str)
         {
             Interlocked.CompareExchange(ref _indent, indent, indent + 1);
-            Writer?.WriteLine($"{Time} {GetString(SCOPE_END)}{GetIndent()}┗");
+            Writer?.WriteLine($"{Time} {GetString(SCOPE_END)}{GetIndent()}┗━━━ ");
             Writer?.Flush();
         }
 
@@ -182,7 +182,7 @@ namespace blqw.Logging
         {
             if (eventId.Id == 0)
             {
-                return eventId.Name ?? CategoryName ?? "";
+                return $" ({eventId.Name ?? CategoryName ?? "<unknown>"})";
             }
             else
             {

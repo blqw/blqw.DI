@@ -49,5 +49,10 @@ namespace blqw
         public static T GetActualObject<T>(this T obj) =>
             obj is IProxy<T> t ? t.ActualTarget : obj;
 
+        public static T With<T>(this T obj,Action<T> action)
+        {
+            action?.Invoke(obj);
+            return obj;
+        }
     }
 }

@@ -8,6 +8,12 @@ namespace blqw.Logging
     /// </summary>
     class ConsoleLogger : TextWriterLogger
     {
+        public static ILoggerProvider LoggerProvider = new Provider();
+        class Provider : ILoggerProvider
+        {
+            public ILogger CreateLogger(string categoryName) => new ConsoleLogger(categoryName);
+            public void Dispose() { }
+        }
 
         public ConsoleLogger(string categoryName)
             : base(Console.Out, categoryName)
@@ -17,7 +23,7 @@ namespace blqw.Logging
         public override void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             //过滤由控制台转发到ILogger的日志
-            if (ConsoleForwarder.IsForwarding(state))
+            if (ReferenceEquals(state, typeof(Console)))
             {
                 return;
             }

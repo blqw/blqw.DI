@@ -25,32 +25,26 @@ namespace demo
                 File.Delete("d:\\log.log");
             }
 
-            var logger = new ServiceCollection()
-                          .AddLogging()
-                          .BuildServiceProvider()
-                          .GetService<ILoggerFactory>()
-                          .AddConsole(true)
-                          .CreateLogger("Ordering");
-
-            using (logger.BeginScope("订单: {ID}", "20160520001"))
-            {
-                logger.LogWarning("商品库存不足(商品ID: {0}, 当前库存:{1}, 订购数量:{2})", "9787121237812", 20, 50);
-                logger.LogError("商品ID录入错误(商品ID: {0})", "9787121235368");
-            }
 
             var p = Startup.CreateServiceCollection()
-                    //.AddConsoleLogger()             //添加控制台日志
-                    //.ConsoleForwardingToLogger()    //使控制台输出内容(Console.Wirte)转发到日志
+                    .AddLogging(x =>                    //安装日志框架
+                    {
+                        x.AddFilter(b => true);
+                    })
                     //.ConfigureServices(AppDomain.CurrentDomain.FindStartupTypesByName()) //搜索整个应用程序域中名称为"Startup"的启动类，忽略访问修饰符
                     .ConfigureServices()                //添加 AssemblyStartupAttribute 特性标注的启动类
                     .BuildServiceProvider()             //编译服务
-                    .AddLogging(x =>
-                    {
-                        x.AddConsole(LogLevel.Trace);
-                    })
-                    //.TraceForwardingToLogger()          //使Trace输出内容(Trace.Wirte等)转发到日志
+                    .AddConsoleLogger()                 //添加控制台日志
+                    .TraceForwardingToLogger()          //使Trace输出内容(Trace.Wirte等)转发到日志
                     .Configure();                       //安装服务
 
+            var logger = p.GetLogger("Ordering");
+            using (logger.BeginScope("订单: {ID}", "20160520001"))
+            {
+                logger.LogWarning("商品库存不足(商品ID: {fdsafdsa}, 当前库存:{1}, 订购数量:{2})", "9787121237812", 20, 50);
+                logger.LogError("商品ID录入错误(商品ID: {0})", "9787121235368");
+                logger.Log(LogLevel.Trace, 0, "1111", null, null);
+            }
 
             Console.WriteLine("Console.WriteLine 输出到日志 0-9");
             for (var i = 0; i < 10; i++)
@@ -59,6 +53,7 @@ namespace demo
             }
 
             Trace.WriteLine("Trace.WriteLine 输出到日志 10-19");
+            Trace.Flush();
             for (var i = 10; i < 20; i++)
             {
                 Trace.WriteLine(i);
@@ -72,6 +67,7 @@ namespace demo
             {
                 Trace.TraceError("测试 异常:" + ex.ToString());
             }
+            Console.WriteLine("按任意键退出");
             Console.ReadKey();
         }
     }
