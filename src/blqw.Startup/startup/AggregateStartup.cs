@@ -94,8 +94,6 @@ namespace blqw
         /// <param name="serviceProvider"></param>
         public void Configure(IServiceProvider serviceProvider)
         {
-            //创建服务代理
-            serviceProvider = new ServiceProviderProxy(serviceProvider);
             //循环安装服务
             _startups.ForEach(x =>
             {

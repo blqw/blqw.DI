@@ -21,7 +21,7 @@ namespace blqw
         /// </summary>
         /// <param name="assembly"></param>
         public static IEnumerable<Type> FindStartupTypesByAttribute(this Assembly assembly)
-            => AssemblyStartupAttribute.FindTypes(assembly, Startup.Logger);
+            => assembly.FindTypes(Startup.Logger);
 
         /// <summary>
         /// 根据 <seealso cref="AssemblyStartupAttribute"/> 特性查找启动类

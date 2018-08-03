@@ -13,8 +13,8 @@
     <Company>blqw</Company>
     <Copyright>blqw Copyright 2019</Copyright>
     <Product>$(ProjectName)</Product>
-    <Description>在程序启动时调用Startup类</Description>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/blqw/$(ProjectName)/master/LICENSE</PackageLicenseUrl>
+    <Description>标准化DI注入点</Description>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/blqw/blqw.Startup/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/blqw/$(ProjectName)</PackageProjectUrl>
     <RepositoryUrl>https://github.com/blqw/$(ProjectName)</RepositoryUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl>
@@ -27,11 +27,16 @@ v2.0.3 支持命名服务
 v2.0.4 支持命名服务委托和方法服务
 v2.0.4.1 修复bug
 v2.1.0.0 优化日志
-v2.1.0.5 修复bug</PackageReleaseNotes>
+v2.1.0.5 修复bug
+v2.1.1.0 将AssemblyStartupAttribute移到blqw.Startup.Abstractions以便单独使用</PackageReleaseNotes>
     <AssemblyVersion>2.1.0.5</AssemblyVersion>
     <FileVersion>2.1.0.5</FileVersion>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Platforms>AnyCPU;x86</Platforms>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

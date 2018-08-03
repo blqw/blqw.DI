@@ -1,5 +1,4 @@
-﻿```csharp
-using blqw;
+﻿using blqw;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
@@ -7,6 +6,7 @@ using System.Threading;
 [assembly: AssemblyStartup(typeof(Startup))]
 static class Startup
 {
+    #region hide
     /// <summary>
     /// 服务提供程序
     /// </summary>
@@ -26,7 +26,7 @@ static class Startup
         {
             var services = new ServiceCollection();
             ConfigureServices(services);
-            var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildSupportDelegateServiceProvdier();
             if (Interlocked.CompareExchange(ref _serviceProvider, serviceProvider, null) == null)
             {
                 OnChanged(serviceProvider);
@@ -39,7 +39,7 @@ static class Startup
     /// <summary>
     /// 更新组件事件
     /// </summary>
-    public static event EventHandler<IServiceProvider> Changed
+    public static event EventHandler<IServiceProvider> ServiceProviderChanged
     {
         add
         {
@@ -53,7 +53,7 @@ static class Startup
     }
 
     /// <summary>
-    /// 触发 <seealso cref="Changed"/> 事件
+    /// 触发 <seealso cref="ServiceProviderChanged"/> 事件
     /// </summary>
     /// <param name="convertors"></param>
     private static void OnChanged(IServiceProvider serviceProvider) =>
@@ -65,6 +65,7 @@ static class Startup
     /// </summary>
     public static IServiceProvider ServiceProvider => _serviceProvider ?? Initiative();
 
+    #endregion
 
     /// <summary>
     /// 配置服务
@@ -72,7 +73,15 @@ static class Startup
     /// <param name="services"></param>
     private static void ConfigureServices(IServiceCollection services)
     {
-        //TODO: 这里注入服务
+        services.AddNamedSingleton("tojson", ToJsonString);
+        services.AddSingleton(typeof(Startup).GetMethod("GetInt", (System.Reflection.BindingFlags)(-1)));
+
+
+        services.AddTransient(p => (Func<string, string>)(s => s + "_abc"));
+
+        services.AddNamedSingleton("blqw", "12121212");
+        services.AddNamedSingleton("blqw", 123456);
+        services.AddNamedSingleton("blqw", "冰麟轻武");
     }
 
     /// <summary>
@@ -88,6 +97,6 @@ static class Startup
         //TODO: 这里获取服务
     }
 
+    private static string ToJsonString(object o) => o?.ToString() ?? "null";
+    private static int GetInt() => 398398389;
 }
-
-```

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,17 +9,18 @@ using System.Reflection;
 namespace blqw
 {
     /// <summary>
-    /// 自定义服务提供程序的代理
+    /// 可创建委托服务的提供程序
     /// </summary>
-    internal class ServiceProviderProxy : IServiceProvider
+    internal class DelegateServiceProvdier : IServiceProvider
     {
         IServiceProvider _provider;
+
 
         /// <summary>
         /// 构造一个服务提供程序的代理
         /// </summary>
         /// <param name="provider">被代理的服务提供程序</param>
-        public ServiceProviderProxy(IServiceProvider provider) => _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+        public DelegateServiceProvdier(IServiceProvider provider) => _provider = provider ?? throw new ArgumentNullException(nameof(provider));
 
         /// <summary>
         /// 获取指定类型的服务
@@ -36,36 +38,47 @@ namespace blqw
             // 如果获取不到服务, 则舱尝试获取委托服务
             if (service == null)
             {
-                if (typeof(Delegate).IsAssignableFrom(serviceType))
+                return _services.GetOrAdd(serviceType, x =>
                 {
-                    return CreateDelegate(serviceType, _provider.GetServices<MethodInfo>());
-                }
-                return null;
+                    if (typeof(Delegate).IsAssignableFrom(x))
+                    {
+                        var p = _provider.GetService<IServiceProvider>();
+                        return CreateDelegate(x, _provider.GetServices<MethodInfo>());
+                    }
+                    return null;
+                });
             }
 
             if (service is IList list && list.IsReadOnly == false && serviceType.IsGenericType && serviceType.GetGenericArguments().Length == 1)
             {
                 var type = serviceType.GetGenericArguments()[0];
-                var delegateType = (type as IServiceTypePretender)?.ServiceType ?? type;
-                if (typeof(Delegate).IsAssignableFrom(delegateType))
+                var delegateType = (type as IServiceProvider)?.GetService(typeof(Type)) as Type ?? type;
+                serviceType = typeof(IEnumerable<>).MakeGenericType(delegateType);
+                return _services.GetOrAdd(serviceType, x =>
                 {
-                    var delegateMethod = delegateType.GetMethod("Invoke");
-                    for (var i = 0; i < list.Count; i++)
+                    if (typeof(Delegate).IsAssignableFrom(delegateType))
                     {
-                        if (delegateType.IsInstanceOfType(list[i]))
+                        var delegateMethod = delegateType.GetMethod("Invoke");
+                        for (var i = 0; i < list.Count; i++)
                         {
-                            continue;
-                        }
-                        var method = (list[i] as Delegate)?.Method ?? list[i] as MethodInfo;
-                        if (CompareMethodSignature(delegateMethod, method) is MethodInfo m)
-                        {
-                            list[i] = m.CreateDelegate(delegateType);
+                            if (delegateType.IsInstanceOfType(list[i]))
+                            {
+                                continue;
+                            }
+                            var method = (list[i] as Delegate)?.Method ?? list[i] as MethodInfo;
+                            if (CompareMethodSignature(delegateMethod, method))
+                            {
+                                list[i] = method.CreateDelegate(delegateType, null);
+                            }
                         }
                     }
-                }
+                    return service;
+                });
             }
             return service;
         }
+
+        ConcurrentDictionary<Type, object> _services = new ConcurrentDictionary<Type, object>();
 
 
         /// <summary>
@@ -79,19 +92,26 @@ namespace blqw
             MethodInfo lastExact = null;
             foreach (var method in methods)
             {
-                if (CompareMethodSignature(method, delegateMethod) is MethodInfo m)
+                if (CompareMethodSignature(method, delegateMethod))
                 {
                     if (method.Name == delegateName)
                     {
-                        lastExact = m;
+                        lastExact = method;
                     }
                     else if (lastExact == null)
                     {
-                        last = m;
+                        last = method;
                     }
                 }
             }
-            return (lastExact ?? last)?.CreateDelegate(delegateType);
+            try
+            {
+                return (lastExact ?? last).CreateDelegate(delegateType, null);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -112,45 +132,44 @@ namespace blqw
             MethodInfo last = null;
             foreach (var method in methods)
             {
-                if (CompareMethodSignature(method, exportMethod) is MethodInfo m)
+                if (CompareMethodSignature(method, exportMethod))
                 {
                     if (method.Name == name) // 如果能找到名称一致的方法就返回, 否则返回最后一个签名一致的方法
                     {
-                        return m.CreateDelegate(serviceType);
+                        return method.CreateDelegate(serviceType);
                     }
-                    last = m;
+                    last = method;
                 }
             }
             return last?.CreateDelegate(serviceType);
-            throw new NotImplementedException();
         }
 
         /// <summary>
-        /// 比较2个方法签名是否相同, 如果相同返回方法2
+        /// 比较2个方法签名是否相同
         /// </summary>
         /// <param name="method1">方法1</param>
         /// <param name="method2">方法2</param>
         /// <returns></returns>
-        private MethodInfo CompareMethodSignature(MethodInfo method1, MethodInfo method2)
+        private bool CompareMethodSignature(MethodInfo method1, MethodInfo method2)
         {
             if (method1 == null || method2 == null || method1.ReturnType != method2.ReturnType)
             {
-                return null;
+                return false;
             }
             var p1 = method1.GetParameters();
             var p2 = method2.GetParameters();
             if (p1.Length != p2.Length)
             {
-                return null;
+                return false;
             }
             for (var i = 0; i < p1.Length; i++)
             {
                 if (p1[i].ParameterType != p2[i].ParameterType)
                 {
-                    return null;
+                    return false;
                 }
             }
-            return method2;
+            return true;
         }
     }
 }

@@ -4,29 +4,94 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
-
-[assembly: AssemblyStartup(typeof(xxx.Startup))]
 
 namespace demo
 {
 
     public class Program
     {
+        delegate string ToString(object obj);
+
+
+
+
+        public static void AAA<T>()
+        {
+            if (_t == null)
+            {
+                _t = typeof(T);
+            }
+            else
+            {
+                Console.WriteLine(_t == typeof(T));
+                _t = null;
+            }
+        }
+
+        static Type _t;
+
+        public static void BBB()
+        {
+
+        }
         static void Main(string[] args)
         {
+            AAA<string>();
+            AAA<string>();
+            AAA<IEquatable<string>>();
+            AAA<IEquatable<string>>();
+            AAA<IEnumerable<string>>();
+            AAA<IEnumerable<string>>();
+            Console.WriteLine();
+
+
+
+
+
+
+            var services = new ServiceCollection();
+            //services.AddSingleton<Func<object, string>>(x => "string:" + x?.ToString());
+            services.AddNamedSingleton<Func<object, string>>("hehe", x => "string:" + x?.ToString());
+            var provider = services.BuildSupportDelegateServiceProvdier();
+            //var toString = provider.GetService<ToString>();
+            var toString = provider.GetNamedService<ToString>("hehe");
+            toString = provider.GetNamedService<ToString>("hehe");
+            toString = provider.GetNamedService<ToString>("hehe");
+            toString = provider.GetNamedService<ToString>("hehe");
+            Console.WriteLine(toString(new { id = 1, name = "blqw" }));
+
+
             if (File.Exists("d:\\log.log"))
             {
                 File.Delete("d:\\log.log");
             }
 
+            {
+                var service5 = Startup.ServiceProvider.GetService<Func<int>>();
+                Debug.Assert(service5() == 398398389);
 
-            var p = Startup.CreateServiceCollection()
+                var service4 = Startup.ServiceProvider.GetNamedService<ToString>("tojson");
+                Debug.Assert(service4(null) == "null");
+
+                var service1 = Startup.ServiceProvider.GetRequiredService<Func<string, string>>();
+                Debug.Assert(service1("xx") == "xx_abc");
+
+                var service2 = Startup.ServiceProvider.GetRequiredNamedService<string>("blqw");
+                Debug.Assert(service2 == "冰麟轻武");
+
+                var service3 = Startup.ServiceProvider.GetRequiredNamedService<int>("blqw");
+                Debug.Assert(service3 == 123456);
+            }
+
+            var p = blqw.Startup.CreateServiceCollection()
                     .AddLogging(x =>                    //安装日志框架
                     {
                         x.AddFilter(b => true);
@@ -34,10 +99,26 @@ namespace demo
                     //.ConfigureServices(AppDomain.CurrentDomain.FindStartupTypesByName()) //搜索整个应用程序域中名称为"Startup"的启动类，忽略访问修饰符
                     .ConfigureServices()                //添加 AssemblyStartupAttribute 特性标注的启动类
                     .BuildServiceProvider()             //编译服务
+                                                        //.SupportDelegateConversion()        //支持委托转换
                     .AddConsoleLogger()                 //添加控制台日志
                     .TraceForwardingToLogger()          //使Trace输出内容(Trace.Wirte等)转发到日志
                     .Configure();                       //安装服务
 
+
+            {
+                var service4 = Startup.ServiceProvider.GetNamedService<Func<object, string>>("tojson");
+                Debug.Assert(service4(null) == "null");
+
+                var service1 = Startup.ServiceProvider.GetRequiredService<Func<string, string>>();
+                Debug.Assert(service1("xx") == "xx_abc");
+
+                var service2 = Startup.ServiceProvider.GetRequiredNamedService<string>("blqw");
+                Debug.Assert(service2 == "冰麟轻武");
+
+                var service3 = Startup.ServiceProvider.GetRequiredNamedService<int>("blqw");
+                Debug.Assert(service3 == 123456);
+
+            }
             var logger = p.GetLogger("Ordering");
             using (logger.BeginScope("订单: {ID}", "20160520001"))
             {
@@ -69,44 +150,6 @@ namespace demo
             }
             Console.WriteLine("按任意键退出");
             Console.ReadKey();
-        }
-    }
-}
-
-namespace xxx
-{
-
-    static class Startup
-    {
-
-        private static string ToJsonString(object o) => o?.ToString() ?? "null";
-
-        public static void ConfigureServices(/* 也可以没有参数 */IServiceCollection services)
-        {
-            //在这里注入组件
-            services.AddNamedSingleton("tojson", ToJsonString);
-
-
-            services.AddTransient(p => (Func<string, string>)(s => s + "_abc"));
-
-            services.AddNamedSingleton("blqw", "12121212");
-            services.AddNamedSingleton("blqw", 123456);
-            services.AddNamedSingleton("blqw", "冰麟轻武");
-        }
-
-        public static void Configure(IServiceProvider provider)
-        {
-            var service4 = provider.GetNamedService<Func<object, string>>("tojson");
-            Debug.Assert(service4(null) == "null");
-
-            var service1 = provider.GetRequiredService<Func<string, string>>();
-            Debug.Assert(service1("xx") == "xx_abc");
-
-            var service2 = provider.GetRequiredNamedService<string>("blqw");
-            Debug.Assert(service2 == "冰麟轻武");
-
-            var service3 = provider.GetRequiredNamedService<int>("blqw");
-            Debug.Assert(service3 == 123456);
         }
     }
 }

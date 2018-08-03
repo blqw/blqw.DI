@@ -1,12 +1,15 @@
 ﻿  <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.0" />
+    <PackageReference Include="blqw.StartupAttribute" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\blqw.DelegateServiceProvdier\blqw.DelegateServiceProvdier.csproj" />
+    <ProjectReference Include="..\..\src\blqw.NamedService\blqw.NamedService.csproj" />
     <ProjectReference Include="..\..\src\blqw.Startup\blqw.Startup.csproj" />
   </ItemGroup>
 
@@ -17,10 +20,17 @@
     <ApplicationIcon />
     <StartupObject />
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <LangVersion>latest</LangVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
 
 </Project>
