@@ -5,7 +5,7 @@
     <RootNamespace>blqw</RootNamespace>
     <Version>1.0.0</Version>
     <Authors>blqw</Authors>
-    <Description>命名服务扩展</Description>
+    <Description>依赖注入拓展之命名服务</Description>
     <Copyright>blqw Copyright 2019</Copyright>
     <PackageLicenseUrl>https://raw.githubusercontent.com/blqw/blqw.DI/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/blqw/blqw.DI</PackageProjectUrl>
@@ -19,6 +19,7 @@
     <FileVersion>1.0.0.0</FileVersion>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+    <PackageId>blqw.DI.NamedService</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
