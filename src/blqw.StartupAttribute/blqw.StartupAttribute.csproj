@@ -4,20 +4,21 @@
     <PackageId>blqw.StartupAttribute</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>blqw</RootNamespace>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>blqw</Authors>
     <Description>标准化DI注入点特性;</Description>
     <Copyright>blqw Copyright 2019</Copyright>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/blqw/blqw.Startup/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/blqw/blqw.Startup/wiki/启动类（Startup.cs）建议写法</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/blqw/blqw.DI/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/blqw/blqw.DI/wiki/启动类（Startup.cs）建议写法</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl>
-    <RepositoryUrl>https://github.com/blqw/blqw.Startup</RepositoryUrl>
+    <RepositoryUrl>https://github.com/blqw/blqw.DI</RepositoryUrl>
     <PackageTags>Startup blqw IOC DI</PackageTags>
     <Platforms>AnyCPU</Platforms>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageReleaseNotes>v1.0.0 [2018.08.01] 初始版</PackageReleaseNotes>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <PackageReleaseNotes>v1.0.1 [2018.08.03] 修改项目地址
+v1.0.0 [2018.08.01] 初始版</PackageReleaseNotes>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
