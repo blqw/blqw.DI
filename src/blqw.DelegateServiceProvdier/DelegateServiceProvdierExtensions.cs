@@ -2,12 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
-namespace blqw
+namespace blqw.DI
 {
     public static class DelegateServiceProvdierExtensions
     {
+        /// <summary>
+        /// 构造支持委托转换的服务提供程序
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceProvider BuildSupportDelegateServiceProvdier(this IServiceCollection services)
         {
             var methodServices = new List<ServiceDescriptor>();

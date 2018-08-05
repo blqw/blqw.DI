@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace blqw
+namespace blqw.DI
 {
     /// <summary>
     /// 可创建委托服务的提供程序

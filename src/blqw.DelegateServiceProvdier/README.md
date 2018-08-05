@@ -4,35 +4,63 @@
 
 ## Demo
 ```cs
-class Program
+public class Program
 {
-    static void Main (string[] args)
+    static void Main(string[] args)
     {
-        //搜索整个应用程序域中"Startup 静态类"，忽略访问修饰符
-        //调用静态类中的 ConfigureServices 方法
-        Startup.ConfigureServices (null);
-        //调用静态类中的 Configure 方法
-        Startup.Configure (null);
+        var provider = new ServiceCollection()
+                            .AddSingleton<Func<object, string>>(o => JsonConvert.SerializeObject(o)) //注入 Func<object, string>
+                            .BuildSupportDelegateServiceProvdier();  // 支持委托转换
+        Business.Operation(provider);
     }
 }
-
-
-static class Startup
+```
+```cs
+static class Business
 {
-    //在这里注入组件
-    public static void ConfigureServices (/* 也可以没有参数 */IServiceCollection services)
+    delegate string ToJsonString(object obj);
+    public static void Operation(IServiceProvider provider)
     {
-        services.AddTransient (p => (Func<string, string>) (s => s + "_abc"));
-    }
-
-    //在这里使用已注入的组件
-    public static void Configure (/* 也可以没有参数 */Func<string, string> get)
-    {
-        if(get != null){
-            Console.WriteLine (get ("xxx.Configure"));
-        }        
+        var x = new
+        {
+            id = 1,
+            name = "blqw"
+        };
+        // 获取 delegate string ToJsonString(object obj);
+        var toJsonStriong = provider.GetService<ToJsonString>();  
+        Console.WriteLine(toJsonStriong(x));
     }
 }
 ```
 
-> 下一个版本支持 `static void ConfigureServices(IContainer container)`
+## 与命名服务同时使用
+https://github.com/blqw/blqw.DI/tree/feature/2.x/src/blqw.NamedService
+```cs
+public class Program
+{
+    static void Main(string[] args)
+    {
+        var provider = new ServiceCollection()
+                            .AddNamedSingleton<Func<object, string>>("ToJsonString", o => JsonConvert.SerializeObject(o)) //注入 Func<object, string>
+                            .BuildSupportDelegateServiceProvdier();  // 支持委托转换
+        Business.Operation(provider);
+    }
+}
+```
+```cs
+static class Business
+{
+    delegate string ToJsonString(object obj);
+    public static void Operation(IServiceProvider provider)
+    {
+        var x = new
+        {
+            id = 1,
+            name = "blqw"
+        };
+        // 获取 delegate string ToJsonString(object obj);
+        var toJsonStriong = provider.GetNamedService<ToJsonString>("ToJsonString");  
+        Console.WriteLine(toJsonStriong(x));
+    }
+}
+```
