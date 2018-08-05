@@ -14,8 +14,8 @@ namespace blqw.DI
     /// </summary>
     internal class DelegateServiceProvdier : IServiceProvider
     {
-        IServiceProvider _provider;
-        ILogger _logger;
+        readonly IServiceProvider _provider;
+        readonly ILogger _logger;
         /// <summary>
         /// 构造一个服务提供程序的代理
         /// </summary>
@@ -39,61 +39,69 @@ namespace blqw.DI
             }
             // 从 _provider 中获取服务
             var service = _provider.GetService(serviceType);
-            // 如果获取不到服务, 则舱尝试获取委托服务
+
+            // 如果获取不到服务, 尝试试获取委托服务
+
             if (service == null)
             {
-                return _services.GetOrAdd(serviceType, x =>
-                {
-                    if (typeof(Delegate).IsAssignableFrom(x))
-                    {
-                        var p = _provider.GetService<IServiceProvider>();
-                        return CreateDelegate(x, _provider.GetServices<MethodInfo>());
-                    }
-                    return null;
-                });
+                return typeof(Delegate).IsAssignableFrom(serviceType)
+                        ? _services.GetOrAdd(serviceType, x => ConvertDelegate(x, _provider.GetServices<MethodInfo>()))
+                        : null;
             }
 
-            if (service is IList list && list.IsReadOnly == false && serviceType.IsGenericType && serviceType.GetGenericArguments().Length == 1)
+            if (service is Delegate delegateService)
+            {
+                if (serviceType is IServiceProvider tp
+                    && tp.GetService(typeof(Type)) is Type delegateType
+                    && typeof(Delegate).IsAssignableFrom(delegateType)
+                    && !delegateType.IsInstanceOfType(service))
+                {
+                    return _services.GetOrAdd(serviceType, x => ConvertDelegate(delegateType, new[] { delegateService.Method }));
+                }
+                return service;
+            }
+
+            if (service is IEnumerable enumerable && serviceType.IsGenericType && serviceType.GetGenericArguments().Length == 1)
             {
                 var type = serviceType.GetGenericArguments()[0];
-                if (list.Count == 0 && typeof(Delegate).IsAssignableFrom(type))
+                if (type is IServiceProvider tp && tp.GetService(typeof(Type)) is Type delegateType)
                 {
-                    list = _provider.GetServices<MethodInfo>() as IList;
+                    return _services.GetOrAdd(serviceType, x => ConvertDelegates(delegateType, enumerable));
                 }
-                var delegateType = (type as IServiceProvider)?.GetService(typeof(Type)) as Type ?? type;
-                serviceType = typeof(IEnumerable<>).MakeGenericType(delegateType);
-                return _services.GetOrAdd(serviceType, x =>
+                else
                 {
-                    var newServices = new ArrayList();
-                    if (typeof(Delegate).IsAssignableFrom(delegateType))
-                    {
-                        var delegateMethod = delegateType.GetMethod("Invoke");
-                        for (var i = 0; i < list.Count; i++)
-                        {
-                            if (delegateType.IsInstanceOfType(list[i]))
-                            {
-                                continue;
-                            }
-                            var method = (list[i] as Delegate)?.Method ?? list[i] as MethodInfo;
-                            if (CompareMethodSignature(delegateMethod, method))
-                            {
-                                newServices.Add(method.CreateDelegate(delegateType, null));
-                            }
-                        }
-                    }
-                    return newServices.ToArray(delegateType);
-                });
+                    return _services.GetOrAdd(serviceType, x => ConvertDelegates(type, _provider.GetServices<MethodInfo>()));
+                }
             }
             return service;
         }
 
-        ConcurrentDictionary<Type, object> _services = new ConcurrentDictionary<Type, object>();
+        readonly ConcurrentDictionary<Type, object> _services = new ConcurrentDictionary<Type, object>(TypeComparer.Instance);
 
+        private IEnumerable ConvertDelegates(Type delegateType, IEnumerable enumerable)
+        {
+            var newServices = new ArrayList();
+            var delegateMethod = delegateType.GetMethod("Invoke");
+            foreach (var item in enumerable)
+            {
+                if (delegateType.IsInstanceOfType(item))
+                {
+                    newServices.Add(item);
+                    continue;
+                }
+                var method = (item as Delegate)?.Method ?? item as MethodInfo;
+                if (CompareMethodSignature(delegateMethod, method))
+                {
+                    newServices.Add(method.CreateDelegate(delegateType, null));
+                }
+            }
+            return newServices.ToArray(delegateType);
+        }
 
         /// <summary>
-        /// 创建委托
+        /// 转换委托服务
         /// </summary>
-        private object CreateDelegate(Type delegateType, IEnumerable<MethodInfo> methods)
+        private object ConvertDelegate(Type delegateType, IEnumerable<MethodInfo> methods)
         {
             var delegateName = delegateType.Name;
             var delegateMethod = delegateType.GetMethod("Invoke");

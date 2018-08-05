@@ -116,13 +116,13 @@ namespace blqw.DI
         /// </summary>
         /// <param name="name">服务名称</param>
         public static T GetRequiredNamedService<T>(this IServiceProvider provider, string name) =>
-            provider.GetServices(NamedType.Get(name, typeof(T))).OfType<T>().Last<T>();
+            (T)provider.GetRequiredService(NamedType.Get(name, typeof(T)));
         /// <summary>
         /// 获取命名服务
         /// </summary>
         /// <param name="name">服务名称</param>
         public static T GetNamedService<T>(this IServiceProvider provider, string name) =>
-            provider.GetServices(NamedType.Get(name, typeof(T))).OfType<T>().LastOrDefault<T>();
+            (T)provider.GetService(NamedType.Get(name, typeof(T)));
         /// <summary>
         /// 获取命名服务
         /// </summary>

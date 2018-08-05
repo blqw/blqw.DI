@@ -24,22 +24,23 @@ namespace demo
         static void Main(string[] args)
         {
             var provider = new ServiceCollection()
-                    .AddSingleton<Func<object, string>>(o => JsonConvert.SerializeObject(o)) //注入
-                    .AddSingleton<Func<object, string>>(p => (Func<object, string>)JsonConvert.SerializeObject) //注入
+                    .AddSingleton<Func<object, string>>(o => JsonConvert.SerializeObject(o))
+                    .AddSingleton<ToJsonString>(o => JsonConvert.SerializeObject(o))
+                    .AddSingleton<Func<object, string>>(p => (Func<object, string>)JsonConvert.SerializeObject)
                     .AddSingleton(typeof(JsonConvert).GetMethod("SerializeObject", new[] { typeof(object) }))
                     .AddSingleton(p => typeof(JsonConvert).GetMethod("SerializeObject", new[] { typeof(object) }))
-                    .AddNamedSingleton("ToJsonString", typeof(JsonConvert).GetMethod("SerializeObject", new[] { typeof(object) })) //注入
-                    .AddNamedSingleton<Func<object, string>>("ToJsonString", o => JsonConvert.SerializeObject(o)) //注入
+                    .AddNamedSingleton("ToJsonString", typeof(JsonConvert).GetMethod("SerializeObject", new[] { typeof(object) }))
+                    .AddNamedSingleton<Func<object, string>>("ToJsonString", o => JsonConvert.SerializeObject(o))
+                    .AddNamedSingleton<ToJsonString>("ToJsonString", o => JsonConvert.SerializeObject(o))
                     .BuildSupportDelegateServiceProvdier();
 
             Business.Operation(provider);
         }
     }
 
-
+    delegate string ToJsonString(object obj);
     static class Business
     {
-        delegate string ToJsonString(object obj);
         public static void Operation(IServiceProvider provider)
         {
             var x = new
@@ -60,6 +61,15 @@ namespace demo
                 Console.WriteLine(s(x));
                 Console.WriteLine("------");
             }
+
+            var toJsonStriongs3 = provider.GetNamedService("ToJsonString");
+            Console.WriteLine(toJsonStriongs3);
+            Console.WriteLine("------");
+
+
+            var toJsonStriongs4 = provider.GetNamedService<ToJsonString>("ToJsonString");
+            Console.WriteLine(toJsonStriongs4);
+            Console.WriteLine("------");
         }
     }
 }
