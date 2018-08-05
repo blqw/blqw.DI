@@ -2,7 +2,7 @@
   <!-- https://docs.microsoft.com/zh-cn/dotnet/core/tools/csproj -->
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>blqw</RootNamespace>
+    <RootNamespace>blqw.DI</RootNamespace>
     <ProjectName>blqw.Startup</ProjectName>
     <Version>2.1.0.5-beta</Version>
 

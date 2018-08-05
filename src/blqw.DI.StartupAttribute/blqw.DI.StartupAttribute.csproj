@@ -3,7 +3,7 @@
   <PropertyGroup>
     <PackageId>blqw.DI.StartupAttribute</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>blqw</RootNamespace>
+    <RootNamespace>blqw.DI</RootNamespace>
     <Version>1.0.1</Version>
     <Authors>blqw</Authors>
     <Description>标准化DI注入点特性;</Description>

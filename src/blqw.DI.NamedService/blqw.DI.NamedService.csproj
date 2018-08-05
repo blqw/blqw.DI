@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>blqw</RootNamespace>
+    <RootNamespace>blqw.DI</RootNamespace>
     <Version>1.0.1</Version>
     <Authors>blqw</Authors>
     <Description>依赖注入拓展之命名服务</Description>
