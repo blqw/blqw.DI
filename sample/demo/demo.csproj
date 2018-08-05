@@ -1,16 +1,17 @@
 ﻿  <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="blqw.StartupAttribute" Version="1.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
+    <Compile Remove="Startup.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\blqw.DelegateServiceProvdier\blqw.DelegateServiceProvdier.csproj" />
-    <ProjectReference Include="..\..\src\blqw.NamedService\blqw.NamedService.csproj" />
-    <ProjectReference Include="..\..\src\blqw.Startup\blqw.Startup.csproj" />
+    <PackageReference Include="blqw.DI.DelegateServiceProvdier" Version="0.0.3" />
+    <PackageReference Include="blqw.DI.NamedService" Version="1.0.1" />
+    <PackageReference Include="blqw.DI.StartupAttribute" Version="1.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -29,8 +30,6 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <LangVersion>latest</LangVersion>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
 
 </Project>

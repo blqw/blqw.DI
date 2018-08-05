@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>blqw</RootNamespace>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>blqw</Authors>
     <Description>依赖注入拓展之命名服务</Description>
     <Copyright>blqw Copyright 2019</Copyright>
@@ -14,11 +14,9 @@
     <PackageTags>NamedService blqw IOC DI</PackageTags>
     <Platforms>AnyCPU</Platforms>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageReleaseNotes>v1.0.0 [2018.08.01] 初始版</PackageReleaseNotes>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <PackageReleaseNotes>v1.0.1 [2018.08.05] 调整命名空间
+v1.0.0 [2018.08.01] 初始版</PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
     <PackageId>blqw.DI.NamedService</PackageId>
   </PropertyGroup>
 

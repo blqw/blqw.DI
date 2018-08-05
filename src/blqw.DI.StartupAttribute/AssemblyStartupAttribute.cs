@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace blqw
+namespace blqw.DI
 {
     /// <summary>
     /// 指定当前程序集的启动类

@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blqw.Startup", "src\blqw.Startup\blqw.Startup.csproj", "{8C3D3103-F558-4959-8D0D-695FF030A26E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blqw.DI.Startup", "src\blqw.DI.Startup\blqw.DI.Startup.csproj", "{8C3D3103-F558-4959-8D0D-695FF030A26E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{A7EC3D7F-17CE-4847-9A95-D99FC8C921D4}"
 EndProject
@@ -15,11 +15,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "files", "files", "{807C9B61
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demo2", "sample\demo2\demo2.csproj", "{D3778649-AD1C-4E60-A63C-BE88B667E22E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blqw.StartupAttribute", "src\blqw.StartupAttribute\blqw.StartupAttribute.csproj", "{5D2F2D3D-4A62-4CB6-A458-A9C69A1C5F6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blqw.DI.StartupAttribute", "src\blqw.DI.StartupAttribute\blqw.DI.StartupAttribute.csproj", "{5D2F2D3D-4A62-4CB6-A458-A9C69A1C5F6B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blqw.NamedService", "src\blqw.NamedService\blqw.NamedService.csproj", "{7F55AD8B-8ABD-4058-8583-A0A4F2CCBE2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blqw.DI.NamedService", "src\blqw.DI.NamedService\blqw.DI.NamedService.csproj", "{7F55AD8B-8ABD-4058-8583-A0A4F2CCBE2C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blqw.DelegateServiceProvdier", "src\blqw.DelegateServiceProvdier\blqw.DelegateServiceProvdier.csproj", "{73DC2496-68E2-4799-A642-3EA7ABEFA014}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blqw.DI.DelegateServiceProvdier", "src\blqw.DelegateServiceProvdier\blqw.DI.DelegateServiceProvdier.csproj", "{73DC2496-68E2-4799-A642-3EA7ABEFA014}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

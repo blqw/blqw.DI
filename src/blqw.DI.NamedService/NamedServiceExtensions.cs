@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace blqw
+namespace blqw.DI
 {
     /// <summary>
     /// 命名服务扩展方法

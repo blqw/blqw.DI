@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace blqw
+namespace blqw.DI
 {
     /// <summary>
     /// 命名类型
