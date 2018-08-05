@@ -26,6 +26,7 @@ v1.0.0 [2018.08.01] 初始版</PackageReleaseNotes>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.0" />
   </ItemGroup>
 
 </Project>

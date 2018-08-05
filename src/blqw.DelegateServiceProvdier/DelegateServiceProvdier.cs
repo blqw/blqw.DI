@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -14,13 +15,16 @@ namespace blqw.DI
     internal class DelegateServiceProvdier : IServiceProvider
     {
         IServiceProvider _provider;
-
-
+        ILogger _logger;
         /// <summary>
         /// 构造一个服务提供程序的代理
         /// </summary>
         /// <param name="provider">被代理的服务提供程序</param>
-        public DelegateServiceProvdier(IServiceProvider provider) => _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+        public DelegateServiceProvdier(IServiceProvider provider)
+        {
+            _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+            _logger = _provider.GetService<ILoggerFactory>()?.CreateLogger<DelegateServiceProvdier>();
+        }
 
         /// <summary>
         /// 获取指定类型的服务
@@ -52,10 +56,15 @@ namespace blqw.DI
             if (service is IList list && list.IsReadOnly == false && serviceType.IsGenericType && serviceType.GetGenericArguments().Length == 1)
             {
                 var type = serviceType.GetGenericArguments()[0];
+                if (list.Count == 0 && typeof(Delegate).IsAssignableFrom(type))
+                {
+                    list = _provider.GetServices<MethodInfo>() as IList;
+                }
                 var delegateType = (type as IServiceProvider)?.GetService(typeof(Type)) as Type ?? type;
                 serviceType = typeof(IEnumerable<>).MakeGenericType(delegateType);
                 return _services.GetOrAdd(serviceType, x =>
                 {
+                    var newServices = new ArrayList();
                     if (typeof(Delegate).IsAssignableFrom(delegateType))
                     {
                         var delegateMethod = delegateType.GetMethod("Invoke");
@@ -68,11 +77,11 @@ namespace blqw.DI
                             var method = (list[i] as Delegate)?.Method ?? list[i] as MethodInfo;
                             if (CompareMethodSignature(delegateMethod, method))
                             {
-                                list[i] = method.CreateDelegate(delegateType, null);
+                                newServices.Add(method.CreateDelegate(delegateType, null));
                             }
                         }
                     }
-                    return service;
+                    return newServices.ToArray(delegateType);
                 });
             }
             return service;
@@ -110,39 +119,11 @@ namespace blqw.DI
             }
             catch (Exception ex)
             {
+                _logger?.LogError(ex, ex.Message);
                 return null;
             }
         }
 
-        /// <summary>
-        /// 获取委托服务
-        /// </summary>
-        /// <param name="provider"></param>
-        /// <param name="serviceType"></param>
-        /// <returns></returns>
-        private object CreateDelegateService(IServiceProvider provider, Type serviceType)
-        {
-            if (typeof(Delegate).IsAssignableFrom(serviceType) == false)
-            {
-                return null;
-            }
-            var methods = provider.GetServices<MethodInfo>();
-            var name = serviceType.Name;
-            var exportMethod = serviceType.GetMethod("Invoke");
-            MethodInfo last = null;
-            foreach (var method in methods)
-            {
-                if (CompareMethodSignature(method, exportMethod))
-                {
-                    if (method.Name == name) // 如果能找到名称一致的方法就返回, 否则返回最后一个签名一致的方法
-                    {
-                        return method.CreateDelegate(serviceType);
-                    }
-                    last = method;
-                }
-            }
-            return last?.CreateDelegate(serviceType);
-        }
 
         /// <summary>
         /// 比较2个方法签名是否相同
