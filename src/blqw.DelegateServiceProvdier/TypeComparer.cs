@@ -10,11 +10,19 @@ namespace blqw.DI
         private static readonly Type _runtimeType = typeof(int).GetType();
         public bool Equals(Type x, Type y)
         {
-            if (x?.GetType() != _runtimeType || y?.GetType() != _runtimeType)
+            if (x == null || y == null)
+            {
+                return x.Equals(y);
+            }
+            if ((x.GetType() != _runtimeType && x.IsGenericType) || (y.GetType() != _runtimeType && y.IsGenericType))
             {
                 if (!Equals(x.GetGenericTypeDefinition(), y.GetGenericTypeDefinition()))
                 {
                     return false;
+                }
+                if (x.IsGenericTypeDefinition || y.IsGenericTypeDefinition)
+                {
+                    return x.IsGenericTypeDefinition == y.IsGenericTypeDefinition;
                 }
                 var args1 = x.GetGenericArguments();
                 var args2 = y.GetGenericArguments();
@@ -31,21 +39,24 @@ namespace blqw.DI
                 }
                 return true;
             }
-            return x != null && y != null && x.Equals(y);
+            return x.Equals(y);
         }
 
         public int GetHashCode(Type obj)
         {
-            if (obj?.GetType() == _runtimeType)
+            if (obj != null && obj.GetType() != _runtimeType && obj.IsGenericType)
             {
                 var hashcode = obj.GetGenericTypeDefinition().GetHashCode();
-                foreach (var item in obj.GetGenericArguments())
+                if (!obj.IsGenericTypeDefinition)
                 {
-                    hashcode ^= item.GetHashCode();
+                    foreach (var item in obj.GetGenericArguments())
+                    {
+                        hashcode ^= item.GetHashCode();
+                    }
                 }
                 return hashcode;
             }
-            return obj.GetHashCode();
+            return obj?.GetHashCode() ?? 0;
         }
     }
 }

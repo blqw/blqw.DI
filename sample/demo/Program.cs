@@ -23,9 +23,6 @@ namespace demo
 
         static void Main(string[] args)
         {
-            var t1 = typeof(IEnumerable<>).MakeGenericType(typeof(string));
-            var t2 = typeof(IEnumerable<>).MakeGenericType(NamedType.Get("xxx"));
-
             var provider = new ServiceCollection()
                     .AddSingleton<Func<object, string>>(o => JsonConvert.SerializeObject(o))
                     .AddSingleton<ToJsonString>(o => JsonConvert.SerializeObject(o))
