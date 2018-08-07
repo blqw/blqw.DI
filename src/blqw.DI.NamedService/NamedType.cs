@@ -11,7 +11,7 @@ namespace blqw.DI
     /// <summary>
     /// 命名类型
     /// </summary>
-    internal sealed class NamedType : TypeDelegator, IServiceProvider
+    public sealed class NamedType : TypeDelegator, IServiceProvider
     {
         /// <summary>
         /// 类型缓存

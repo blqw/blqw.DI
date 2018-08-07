@@ -16,6 +16,8 @@ namespace blqw.DI
     {
         readonly IServiceProvider _provider;
         readonly ILogger _logger;
+        readonly ConcurrentDictionary<Type, object> _services;
+
         /// <summary>
         /// 构造一个服务提供程序的代理
         /// </summary>
@@ -24,6 +26,7 @@ namespace blqw.DI
         {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
             _logger = _provider.GetService<ILoggerFactory>()?.CreateLogger<DelegateServiceProvdier>();
+            _services = new ConcurrentDictionary<Type, object>(TypeComparer.Instance);
         }
 
         /// <summary>
@@ -40,10 +43,10 @@ namespace blqw.DI
             // 从 _provider 中获取服务
             var service = _provider.GetService(serviceType);
 
-            // 如果获取不到服务, 尝试试获取委托服务
 
             if (service == null)
             {
+                // 当常规方式没有获取到服务，且服务是委托类型时，尝试获取MethodInfo服务，并返回最后一个签名相同的MethodInfo并转换为指定类型的委托
                 return typeof(Delegate).IsAssignableFrom(serviceType)
                         ? _services.GetOrAdd(serviceType, x => ConvertDelegate(x, _provider.GetServices<MethodInfo>()))
                         : null;
@@ -51,6 +54,7 @@ namespace blqw.DI
 
             if (service is Delegate delegateService)
             {
+                // 当获取的服务是委托，但与要求的类型不符时，尝试转换委托类型
                 if (serviceType is IServiceProvider tp
                     && tp.GetService(typeof(Type)) is Type delegateType
                     && typeof(Delegate).IsAssignableFrom(delegateType)
@@ -63,6 +67,7 @@ namespace blqw.DI
 
             if (service is IEnumerable enumerable && serviceType.IsGenericType && serviceType.GetGenericArguments().Length == 1)
             {
+                // 当获取的服务是泛型集合时
                 var type = serviceType.GetGenericArguments()[0];
                 if (type is IServiceProvider tp && tp.GetService(typeof(Type)) is Type delegateType)
                 {
@@ -76,8 +81,12 @@ namespace blqw.DI
             return service;
         }
 
-        readonly ConcurrentDictionary<Type, object> _services = new ConcurrentDictionary<Type, object>(TypeComparer.Instance);
-
+        /// <summary>
+        /// 转换委托服务集合
+        /// </summary>
+        /// <param name="delegateType"></param>
+        /// <param name="enumerable"></param>
+        /// <returns></returns>
         private IEnumerable ConvertDelegates(Type delegateType, IEnumerable enumerable)
         {
             var newServices = new ArrayList();

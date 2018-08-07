@@ -7,9 +7,10 @@ namespace blqw.DI
     internal class TypeComparer : IEqualityComparer<Type>
     {
         public static readonly TypeComparer Instance = new TypeComparer();
+        private static readonly Type _runtimeType = typeof(int).GetType();
         public bool Equals(Type x, Type y)
         {
-            if (x?.GetType().Name == "TypeBuilderInstantiation" && y?.GetType().Name == "TypeBuilderInstantiation")
+            if (x?.GetType() != _runtimeType || y?.GetType() != _runtimeType)
             {
                 if (!Equals(x.GetGenericTypeDefinition(), y.GetGenericTypeDefinition()))
                 {
@@ -35,7 +36,7 @@ namespace blqw.DI
 
         public int GetHashCode(Type obj)
         {
-            if (obj?.GetType().Name == "TypeBuilderInstantiation")
+            if (obj?.GetType() == _runtimeType)
             {
                 var hashcode = obj.GetGenericTypeDefinition().GetHashCode();
                 foreach (var item in obj.GetGenericArguments())

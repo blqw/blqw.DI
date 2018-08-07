@@ -110,7 +110,7 @@ namespace blqw.DI
         /// </summary>
         /// <param name="name">服务名称</param>
         public static object GetRequiredNamedService(this IServiceProvider provider, string name, Type serviceType) =>
-            provider.GetServices(NamedType.Get(name, serviceType)).Last(serviceType.IsInstanceOfType);
+            provider.GetRequiredService(NamedType.Get(name, serviceType));
         /// <summary>
         /// 获取命名服务
         /// </summary>
