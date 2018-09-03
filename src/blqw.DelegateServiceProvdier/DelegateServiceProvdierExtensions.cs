@@ -35,6 +35,7 @@ namespace blqw.DI
                     }
                 }
             }
+
             methodServices.ForEach(services.Add);
             var provider = build(services);
             return new DelegateServiceProvdier(provider);

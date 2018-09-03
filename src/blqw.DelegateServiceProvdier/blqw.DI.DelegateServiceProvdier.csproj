@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>blqw.DI</RootNamespace>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>blqw</Authors>
     <Description>依赖注入拓展之委托转换</Description>
     <Copyright>blqw Copyright 2019</Copyright>
@@ -14,11 +14,13 @@
     <PackageTags>DelegateServiceProvdier delegate blqw IOC DI</PackageTags>
     <Platforms>AnyCPU</Platforms>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageReleaseNotes>v1.0.2 [2018.08.07] 优化代码
+    <PackageReleaseNotes>v1.0.3 [2018.09.03] 允许自定义BuildServiceProvider
+v1.0.2 [2018.08.07] 优化代码
 v1.0.1 [2018.08.05] 调整命名空间
 v1.0.0 [2018.08.01] 初始版</PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
     <AssemblyName>blqw.DI.DelegateServiceProvdier</AssemblyName>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
