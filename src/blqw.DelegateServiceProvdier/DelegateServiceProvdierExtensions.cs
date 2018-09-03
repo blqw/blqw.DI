@@ -10,9 +10,13 @@ namespace blqw.DI
         /// <summary>
         /// 构造支持委托转换的服务提供程序
         /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static IServiceProvider BuildSupportDelegateServiceProvdier(this IServiceCollection services)
+        public static IServiceProvider BuildSupportDelegateServiceProvdier(this IServiceCollection services) =>
+            services.SupportDelegate(x => x.BuildServiceProvider());
+
+        /// <summary>
+        /// 可自己控制构造过程的 支持委托转换的服务提供程序
+        /// </summary>
+        public static IServiceProvider SupportDelegate(this IServiceCollection services, Func<IServiceCollection, IServiceProvider> build)
         {
             var methodServices = new List<ServiceDescriptor>();
             // 循环所有服务
@@ -32,7 +36,7 @@ namespace blqw.DI
                 }
             }
             methodServices.ForEach(services.Add);
-            var provider = services.BuildServiceProvider();
+            var provider = build(services);
             return new DelegateServiceProvdier(provider);
         }
     }
