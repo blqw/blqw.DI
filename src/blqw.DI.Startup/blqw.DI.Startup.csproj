@@ -38,6 +38,12 @@ v2.1.1.0 将AssemblyStartupAttribute移到blqw.Startup.Abstractions以便单独�
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DI.Startup\blqw.DI.Startup.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DI.Startup\blqw.DI.Startup.xml</DocumentationFile>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />

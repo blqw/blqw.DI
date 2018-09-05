@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\blqw.DelegateServiceProvdier\blqw.DI.DelegateServiceProvdier.csproj" />
+    <ProjectReference Include="..\..\src\blqw.DI.ExtensionMethods\blqw.DI.ExtensionMethods.csproj" />
     <ProjectReference Include="..\..\src\blqw.DI.NamedService\blqw.DI.NamedService.csproj" />
   </ItemGroup>
 
