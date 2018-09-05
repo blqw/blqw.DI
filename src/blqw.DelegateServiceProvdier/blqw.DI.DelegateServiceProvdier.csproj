@@ -25,6 +25,11 @@ v1.0.0 [2018.08.01] 初始版</PackageReleaseNotes>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>latest</LangVersion>
+    <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DelegateServiceProvdier\blqw.DI.DelegateServiceProvdier.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DelegateServiceProvdier\blqw.DI.DelegateServiceProvdier.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

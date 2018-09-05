@@ -3,30 +3,30 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>blqw.DI</RootNamespace>
-    <Version>1.0.2</Version>
     <Authors>blqw</Authors>
-    <Description>依赖注入拓展之命名服务</Description>
+    <Description>扩展方法</Description>
     <Copyright>blqw Copyright 2019</Copyright>
     <PackageLicenseUrl>https://raw.githubusercontent.com/blqw/blqw.DI/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/blqw/blqw.DI</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl>
     <RepositoryUrl>https://github.com/blqw/blqw.DI</RepositoryUrl>
-    <PackageTags>NamedService blqw IOC DI</PackageTags>
+    <PackageTags>DelegateServiceProvdier delegate blqw IOC DI</PackageTags>
     <Platforms>AnyCPU</Platforms>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageReleaseNotes>v1.0.2 [2018.08.07] 优化代码
-v1.0.1 [2018.08.05] 调整命名空间
-v1.0.0 [2018.08.01] 初始版</PackageReleaseNotes>
+    <PackageReleaseNotes>v1.0.0 [2018.09.05] 初始版
+新增 AutowriteAttribute
+新增扩展方法 Autowrite
+新增扩展方法 CreateInstance等
+</PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
-    <PackageId>blqw.DI.NamedService</PackageId>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DI.NamedService\blqw.DI.NamedService.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DI.NamedService\blqw.DI.NamedService.xml</DocumentationFile>
+    <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DI.ExtensionMethods\blqw.DI.ExtensionMethods.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DI.ExtensionMethods\blqw.DI.ExtensionMethods.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
