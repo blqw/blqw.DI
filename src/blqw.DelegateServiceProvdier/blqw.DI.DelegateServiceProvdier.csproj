@@ -8,7 +8,7 @@
     <Description>依赖注入拓展之委托转换</Description>
     <Copyright>blqw Copyright 2019</Copyright>
     <PackageLicenseUrl>https://raw.githubusercontent.com/blqw/blqw.DI/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/blqw/blqw.DI</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/blqw/blqw.DI/tree/master/src/blqw.DelegateServiceProvdier</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl>
     <RepositoryUrl>https://github.com/blqw/blqw.DI</RepositoryUrl>
     <PackageTags>DelegateServiceProvdier delegate blqw IOC DI</PackageTags>
