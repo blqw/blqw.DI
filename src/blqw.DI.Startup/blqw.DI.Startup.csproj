@@ -14,8 +14,8 @@
     <Copyright>blqw Copyright 2019</Copyright>
     <Product>$(ProjectName)</Product>
     <Description>标准化DI注入点</Description>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/blqw/blqw.Startup/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/blqw/$(ProjectName)</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/blqw/blqw.DI/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/blqw/blqw.DI/tree/master/src/blqw.DI.Startup</PackageProjectUrl>
     <RepositoryUrl>https://github.com/blqw/$(ProjectName)</RepositoryUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl>
     <PackageTags>Startup blqw IOC DI</PackageTags>

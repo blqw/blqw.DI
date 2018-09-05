@@ -6,7 +6,7 @@
     <Authors>blqw</Authors>
     <Description>扩展方法</Description>
     <Copyright>blqw Copyright 2019</Copyright>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/blqw/blqw.DI/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl>https://github.com/blqw/blqw.DI/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/blqw/blqw.DI/tree/master/src/blqw.DI.ExtensionMethods</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl>
     <RepositoryUrl>https://github.com/blqw/blqw.DI</RepositoryUrl>

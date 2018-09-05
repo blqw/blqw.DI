@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>blqw.DI.ExtensionMethods</name>
+    </assembly>
+    <members>
+        <member name="T:blqw.DI.AutowriteAttribute">
+            <summary>
+            自动注入特性
+            </summary>
+        </member>
+        <member name="T:blqw.DI.ExtensionMethods">
+            <summary>
+            扩展方法
+            </summary>
+        </member>
+        <member name="F:blqw.DI.ExtensionMethods._pool">
+            <summary>
+            对象池
+            </summary>
+        </member>
+        <member name="M:blqw.DI.ExtensionMethods.Autowrite(System.IServiceProvider,System.Object)">
+            <summary>
+            注入字段和属性
+            </summary>
+            <param name="serviceProvider"></param>
+            <param name="instance"> 待注入的对象实例或类型实例 </param>
+            <returns></returns>
+        </member>
+        <member name="M:blqw.DI.ExtensionMethods.GetServiceOrCreateInstance(System.IServiceProvider,System.Type)">
+            <summary>
+            从服务中获取对象或动态创建对象, 并注入字段和属性
+            </summary>
+            <param name="serviceProvider">服务提供程序</param>
+            <param name="type">待获取或创建的对象类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:blqw.DI.ExtensionMethods.CreateFactory(System.IServiceProvider,System.Type,System.Type[])">
+            <summary>
+            获取用于创建指定对象并注入字段和属性的委托方法
+            </summary>
+            <param name="serviceProvider">服务提供程序</param>
+            <param name="instanceType">待创建的对象类型</param>
+            <param name="argumentTypes">额外构造参数</param>
+            <returns></returns>
+        </member>
+        <member name="M:blqw.DI.ExtensionMethods.CreateInstance(System.IServiceProvider,System.Type,System.Object[])">
+            <summary>
+            动态创建对象, 并注入字段和属性
+            </summary>
+            <param name="provider">服务提供程序</param>
+            <param name="instanceType">待创建的对象类型</param>
+            <param name="parameters">额外构造参数</param>
+            <returns></returns>
+        </member>
+        <member name="M:blqw.DI.ExtensionMethods.CreateInstance``1(System.IServiceProvider,System.Object[])">
+            <summary>
+            动态创建对象, 并注入字段和属性
+            </summary>
+            <typeparam name="T">待创建的对象类型</typeparam>
+            <param name="provider">服务提供程序</param>
+            <param name="parameters">额外构造参数</param>
+            <returns></returns>
+        </member>
+        <member name="M:blqw.DI.ExtensionMethods.GetServiceOrCreateInstance``1(System.IServiceProvider)">
+            <summary>
+            从服务中获取对象或动态创建对象, 并注入字段和属性
+            </summary>
+            <typeparam name="T">待获取或创建的对象类型</typeparam>
+            <param name="provider">服务提供程序</param>
+            <returns></returns>
+        </member>
+        <member name="T:blqw.DI.ObjectPool`1">
+            <summary>
+            对象池
+            </summary>
+        </member>
+        <member name="P:blqw.DI.ObjectPool`1.Capacity">
+            <summary>
+            对象池容量大小
+            </summary>
+        </member>
+        <member name="M:blqw.DI.ObjectPool`1.Pop(`0@)">
+            <summary>
+            弹出对象
+            </summary>
+        </member>
+        <member name="T:blqw.DI.ObjectPool`1.Recyclable">
+            <summary>
+            可回收的对象
+            </summary>
+        </member>
+        <member name="M:blqw.DI.ObjectPool`1.Recyclable.#ctor(`0,blqw.DI.ObjectPool{`0})">
+            <summary>
+            初始化对象
+            </summary>
+            <param name="obj">待回收的 对象</param>
+        </member>
+        <member name="M:blqw.DI.ObjectPool`1.Recyclable.Dispose">
+            <summary>
+            回收对象
+            </summary>
+        </member>
+    </members>
+</doc>
