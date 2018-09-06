@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>blqw.DI.DelegateServiceProvdier</name>
+    </assembly>
+    <members>
+        <member name="T:blqw.DI.DelegateServiceProvdier">
+            <summary>
+            可创建委托服务的提供程序
+            </summary>
+        </member>
+        <member name="M:blqw.DI.DelegateServiceProvdier.#ctor(System.IServiceProvider)">
+            <summary>
+            构造一个服务提供程序的代理
+            </summary>
+            <param name="provider">被代理的服务提供程序</param>
+        </member>
+        <member name="M:blqw.DI.DelegateServiceProvdier.GetService(System.Type)">
+            <summary>
+            获取指定类型的服务
+            </summary>
+            <param name="serviceType">服务类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:blqw.DI.DelegateServiceProvdier.ConvertDelegates(System.Type,System.Collections.IEnumerable)">
+            <summary>
+            转换委托服务集合
+            </summary>
+            <param name="delegateType"></param>
+            <param name="enumerable"></param>
+            <returns></returns>
+        </member>
+        <member name="M:blqw.DI.DelegateServiceProvdier.ConvertDelegate(System.Type,System.Collections.Generic.IEnumerable{System.Reflection.MethodInfo})">
+            <summary>
+            转换委托服务
+            </summary>
+        </member>
+        <member name="M:blqw.DI.DelegateServiceProvdier.CompareMethodSignature(System.Reflection.MethodInfo,System.Reflection.MethodInfo)">
+            <summary>
+            比较2个方法签名是否相同
+            </summary>
+            <param name="method1">方法1</param>
+            <param name="method2">方法2</param>
+            <returns></returns>
+        </member>
+        <member name="M:blqw.DI.DelegateServiceProvdierExtensions.BuildSupportDelegateServiceProvdier(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            构造支持委托转换的服务提供程序
+            </summary>
+        </member>
+        <member name="M:blqw.DI.DelegateServiceProvdierExtensions.SupportDelegate(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{Microsoft.Extensions.DependencyInjection.IServiceCollection,System.IServiceProvider})">
+            <summary>
+            可自己控制构造过程的 支持委托转换的服务提供程序
+            </summary>
+        </member>
+    </members>
+</doc>

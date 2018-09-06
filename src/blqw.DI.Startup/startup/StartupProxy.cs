@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace blqw
+namespace blqw.DI
 {
     /// <summary>
     /// 启动器代理程序
@@ -15,7 +15,6 @@ namespace blqw
         /// 初始化启动器代理
         /// </summary>
         /// <param name="startupType">启动器类</param>
-        /// <param name="logger">日志程序</param>
         public StartupProxy(Type startupType)
         {
             StartupType = startupType ?? throw new ArgumentNullException(nameof(startupType));
@@ -113,7 +112,7 @@ namespace blqw
             {
                 Logger.Log("安装服务:" + StartupType.FullName);
                 var obj = _configure.IsStatic ? null : SetupInstance;
-                var args = _configure.GetParameters().Select(x => serviceProvider.GetParameterValue(_configure, x)).ToArray();
+                var args = _configure.GetParameters().Select(x => serviceProvider.GetParameterValue(x)).ToArray();
                 _configure.Invoke(obj, args);
             }
             catch (Exception ex)

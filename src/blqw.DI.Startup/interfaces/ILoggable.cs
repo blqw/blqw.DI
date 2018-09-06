@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace blqw
+namespace blqw.DI
 {
     /// <summary>
     /// 可记录日志的
     /// </summary>
-    public interface ILoggable
+    internal interface ILoggable
     {
         /// <summary>
         /// 日志记录

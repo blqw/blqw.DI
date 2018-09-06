@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
-namespace blqw
+namespace blqw.DI
 {
     /// <summary>
     /// 扩展方法
@@ -13,19 +13,12 @@ namespace blqw
     static class Extensions
     {
         /// <summary>
-        /// 判断类型是否是静态类
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsStatic(this Type type) => type != null && type.IsAbstract && type.IsSealed;
-
-        /// <summary>
         /// 尝试从服务器提供程序中获取方法参数的值
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public static object GetParameterValue(this IServiceProvider serviceProvider, MethodInfo method, ParameterInfo parameter)
+        public static object GetParameterValue(this IServiceProvider serviceProvider, ParameterInfo parameter)
         {
             if (serviceProvider == null)
             {
@@ -42,19 +35,7 @@ namespace blqw
                 return serviceProvider;
             }
 
-            return serviceProvider.GetService(parameter.ParameterType) ?? (parameter.HasDefaultValue ? parameter.DefaultValue : null);
-        }
-
-        /// <summary>
-        /// 获取代理对象(如果存在)的真实对象
-        /// </summary>
-        public static T GetActualObject<T>(this T obj) =>
-            obj is IProxy<T> t ? t.ActualTarget : obj;
-
-        public static T With<T>(this T obj, Action<T> action)
-        {
-            action?.Invoke(obj);
-            return obj;
+            return serviceProvider.GetServiceOrCreateInstance(parameter.ParameterType) ?? (parameter.HasDefaultValue ? parameter.DefaultValue : null);
         }
 
         /// <summary>

@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>blqw.DI.NamedService</name>
+    </assembly>
+    <members>
+        <member name="T:blqw.DI.NamedServiceExtensions">
+            <summary>
+            命名服务扩展方法
+            </summary>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.AddNamedScoped``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String)">
+            <summary>
+            添加命名服务
+            </summary>
+            <typeparam name="TService">服务类型</typeparam>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.AddNamedScoped(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Func{System.IServiceProvider,System.Object})">
+            <summary>
+            添加命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.AddNamedScoped(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Type)">
+            <summary>
+            添加命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.AddNamedSingleton``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String)">
+            <summary>
+            添加命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.AddNamedSingleton(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Func{System.IServiceProvider,System.Object})">
+            <summary>
+            添加命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.AddNamedSingleton(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Type)">
+            <summary>
+            添加命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.AddNamedSingleton``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,``0)">
+            <summary>
+            添加命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.AddNamedTransient``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String)">
+            <summary>
+            添加命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.AddNamedTransient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Func{System.IServiceProvider,System.Object})">
+            <summary>
+            添加命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.AddNamedTransient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Type)">
+            <summary>
+            添加命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.GetNamedService(System.IServiceProvider,System.String)">
+            <summary>
+            获取命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.GetRequiredNamedService(System.IServiceProvider,System.String)">
+            <summary>
+            获取命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.GetRequiredNamedService(System.IServiceProvider,System.String,System.Type)">
+            <summary>
+            获取命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.GetRequiredNamedService``1(System.IServiceProvider,System.String)">
+            <summary>
+            获取命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.GetNamedService``1(System.IServiceProvider,System.String)">
+            <summary>
+            获取命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.GetNamedServices``1(System.IServiceProvider,System.String)">
+            <summary>
+            获取命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="M:blqw.DI.NamedServiceExtensions.GetNamedServices(System.IServiceProvider,System.String,System.Type)">
+            <summary>
+            获取命名服务
+            </summary>
+            <param name="name">服务名称</param>
+        </member>
+        <member name="T:blqw.DI.NamedType">
+            <summary>
+            命名类型
+            </summary>
+        </member>
+        <member name="F:blqw.DI.NamedType._cache">
+            <summary>
+            类型缓存
+            </summary>
+        </member>
+        <member name="M:blqw.DI.NamedType.Get(System.String,System.Type)">
+            <summary>
+            获取指定名称的服务
+            </summary>
+            <param name="name">服务名称</param>
+            <param name="serviceType">服务类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:blqw.DI.NamedType.#ctor(System.String,System.Type)">
+            <summary>
+            私有构造函数
+            </summary>
+            <param name="name">类型名称</param>
+            <param name="serviceType">服务类型</param>
+        </member>
+        <member name="P:blqw.DI.NamedType.ServiceType">
+            <summary>
+            实际服务类型
+            </summary>
+        </member>
+        <member name="P:blqw.DI.NamedType.Name">
+            <inherit />
+        </member>
+        <member name="P:blqw.DI.NamedType.GUID">
+            <inherit />
+        </member>
+        <member name="M:blqw.DI.NamedType.Equals(System.Object)">
+            <inherit />
+        </member>
+        <member name="M:blqw.DI.NamedType.GetHashCode">
+            <inherit />
+        </member>
+        <member name="M:blqw.DI.NamedType.Equals(System.Type)">
+            <inherit />
+        </member>
+        <member name="P:blqw.DI.NamedType.FullName">
+            <inherit />
+        </member>
+        <member name="M:blqw.DI.NamedType.GetService(System.Type)">
+            <inherit />
+        </member>
+    </members>
+</doc>

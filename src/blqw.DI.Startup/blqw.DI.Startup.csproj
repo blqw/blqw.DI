@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>blqw.DI</RootNamespace>
     <ProjectName>blqw.Startup</ProjectName>
-    <Version>2.1.0.5-beta</Version>
+    <Version>2.1.0.5</Version>
 
     <PackageId>$(ProjectName)</PackageId>
     <PackageVersion>$(Version)</PackageVersion>
@@ -48,6 +48,10 @@ v2.1.1.0 将AssemblyStartupAttribute移到blqw.Startup.Abstractions以便单独�
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\blqw.DI.ExtensionMethods\blqw.DI.ExtensionMethods.csproj" />
   </ItemGroup>
 
 </Project>
