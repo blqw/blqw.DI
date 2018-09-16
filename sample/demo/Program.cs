@@ -22,25 +22,6 @@ using System.Xml.XPath;
 [assembly:AssemblyStartup(typeof(demo.Startup))]
 namespace demo
 {
-
-    public class Program
-    {
-
-        static void Main(string[] args)
-        {
-            var provider = new ServiceCollection()
-                                    .AddLogging()
-                                    .ConfigureServices()
-                                    .BuildServiceProvider()
-                                    .Configure()
-                                    ;
-
-
-        }
-
-    }
-
-
     class Startup
     {
         public void ConfigureServices(IServiceCollection services)
@@ -55,4 +36,18 @@ namespace demo
         }
     }
 
+    public class Program
+    {
+
+        static void Main(string[] args)
+        {
+            var provider = new ServiceCollection()
+                                    .AddLogging()
+                                    .ConfigureServices()     //调用 启动类的 ConfigureServices
+                                    .BuildServiceProvider()
+                                    .Configure();            //调用 启动类的 Configure
+
+        }
+
+    }
 }

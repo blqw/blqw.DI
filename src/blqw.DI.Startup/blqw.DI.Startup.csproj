@@ -4,9 +4,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>blqw.DI</RootNamespace>
     <ProjectName>blqw.Startup</ProjectName>
-    <Version>2.1.0.5</Version>
+    <Version>1.0.0.0</Version>
 
-    <PackageId>$(ProjectName)</PackageId>
+    <PackageId>blqw.DI.Startup</PackageId>
     <PackageVersion>$(Version)</PackageVersion>
     <Title>$(ProjectName)</Title>
     <Authors>blqw</Authors>
@@ -19,18 +19,9 @@
     <RepositoryUrl>https://github.com/blqw/$(ProjectName)</RepositoryUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl>
     <PackageTags>Startup blqw IOC DI</PackageTags>
-    <PackageReleaseNotes>v0.0.1 初始版本
-v2.0.0 重新设计
-v2.0.1 增加通过类型加载而不是类型全称加载的方式
-v2.0.2 降低依赖的系统组件版本
-v2.0.3 支持命名服务
-v2.0.4 支持命名服务委托和方法服务
-v2.0.4.1 修复bug
-v2.1.0.0 优化日志
-v2.1.0.5 修复bug
-v2.1.1.0 将AssemblyStartupAttribute移到blqw.Startup.Abstractions以便单独使用</PackageReleaseNotes>
-    <AssemblyVersion>2.1.0.5</AssemblyVersion>
-    <FileVersion>2.1.0.5</FileVersion>
+    <PackageReleaseNotes>v0.0.1 [2018.09.07] 初始版本</PackageReleaseNotes>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Platforms>AnyCPU;x86</Platforms>
@@ -46,12 +37,9 @@ v2.1.1.0 将AssemblyStartupAttribute移到blqw.Startup.Abstractions以便单独�
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="blqw.DI.ExtensionMethods" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\blqw.DI.ExtensionMethods\blqw.DI.ExtensionMethods.csproj" />
   </ItemGroup>
 
 </Project>
