@@ -1,8 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <ProjectName>blqw.DI.Context</ProjectName>
     <RootNamespace>blqw.DI</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>blqw</Authors>
+    <Description>依赖注入拓展之服务上下文</Description>
+    <Copyright>blqw Copyright 2019</Copyright>
+    <PackageLicenseUrl>https://github.com/blqw/blqw.DI/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/blqw/blqw.DI/tree/master/src/blqw.DI.Context</PackageProjectUrl>
+    <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl>
+    <RepositoryUrl>https://github.com/blqw/blqw.DI</RepositoryUrl>
+    <PackageTags>NamedService blqw IOC DI</PackageTags>
+    <Platforms>AnyCPU</Platforms>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageReleaseNotes>
+      v1.0.0 [2018.09.16] 初始版
+    </PackageReleaseNotes>
+    <SignAssembly>false</SignAssembly>
+    <PackageId>blqw.DI.Context</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

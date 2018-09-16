@@ -16,7 +16,7 @@
     <Description>标准化DI注入点</Description>
     <PackageLicenseUrl>https://github.com/blqw/blqw.DI/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/blqw/blqw.DI/tree/master/src/blqw.DI.Startup</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/blqw/$(ProjectName)</RepositoryUrl>
+    <RepositoryUrl>https://github.com/blqw/blqw.DI</RepositoryUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl>
     <PackageTags>Startup blqw IOC DI</PackageTags>
     <PackageReleaseNotes>v0.0.1 [2018.09.07] 初始版本</PackageReleaseNotes>

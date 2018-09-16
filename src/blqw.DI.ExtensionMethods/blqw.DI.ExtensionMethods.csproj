@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>blqw.DI</RootNamespace>
     <Authors>blqw</Authors>
-    <Description>扩展方法</Description>
+    <Description>依赖注入扩展方法</Description>
     <Copyright>blqw Copyright 2019</Copyright>
     <PackageLicenseUrl>https://github.com/blqw/blqw.DI/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/blqw/blqw.DI/tree/master/src/blqw.DI.ExtensionMethods</PackageProjectUrl>
