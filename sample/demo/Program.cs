@@ -18,8 +18,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 
+
+[assembly:AssemblyStartup(typeof(demo.Startup))]
 namespace demo
 {
+    class Startup
+    {
+        public void ConfigureServices(IServiceCollection services)
+        {
+            Console.WriteLine("ConfigureServices");
+        }
+
+        public void Configure(ILogger<Startup> logger)
+        {
+            Console.WriteLine("Configure");
+            Console.WriteLine("logger: " + logger);
+        }
+    }
 
     public class Program
     {
@@ -28,34 +43,11 @@ namespace demo
         {
             var provider = new ServiceCollection()
                                     .AddLogging()
-                                    .BuildServiceProvider();
+                                    .ConfigureServices()     //调用 启动类的 ConfigureServices
+                                    .BuildServiceProvider()
+                                    .Configure();            //调用 启动类的 Configure
 
-            var a = provider.GetServiceOrCreateInstance<MyClass>();
-            Console.WriteLine(a.Logger);
-
-            var b = new MyClass();
-            provider.Autowrite(b);
-            Console.WriteLine(b.Logger);
-
-            provider.Autowrite(typeof(MyClass));
         }
 
-        class MyClass
-        {
-            [Autowrite]
-            public ILogger<MyClass> Logger { get; }
-            [Autowrite]
-            public ILogger<MyClass> Logger2 { get; private set; }
-            [Autowrite]
-            private readonly ILogger<MyClass> _logger;
-
-            [Autowrite]
-            public static ILogger<MyClass> Logger3 { get; }
-
-            [Autowrite]
-            private readonly static ILogger<MyClass> _logger2;
-        }
     }
-
-
 }

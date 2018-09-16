@@ -1,13 +1,11 @@
-﻿using blqw.Logging;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
-namespace blqw
+namespace blqw.DI
 {
     /// <summary>
     /// 公开的扩展方法
@@ -167,7 +165,7 @@ namespace blqw
             }
 
             //获取日志服务
-            var logger = serviceProvider.GetLogger(typeof(IStartup));
+            var logger = serviceProvider.GetLogger<IStartup>();
             Startup.Logger = logger;
             using (logger.BeginScope("安装服务"))
             {

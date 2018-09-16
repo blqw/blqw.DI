@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace blqw
+namespace blqw.DI
 {
     // 预处理日志
     class PrestoreLogger : ILogger, IDisposable

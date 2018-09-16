@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 
-namespace blqw
+namespace blqw.DI
 {
     /// <summary>
     /// 服务集合装饰器，主要用于替换和增强对于委托类型服务的支持

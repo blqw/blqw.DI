@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 
-namespace blqw
+namespace blqw.DI
 {
     /// <summary>
     /// 服务集合

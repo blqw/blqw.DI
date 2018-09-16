@@ -3,9 +3,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace blqw
+namespace blqw.DI
 {
     /// <summary>
     /// 服务聚合启动器
@@ -51,7 +50,7 @@ namespace blqw
         /// <summary>
         /// 初始化服务聚合启动器
         /// </summary>
-        /// <param name="startupTypes">启动类</param>
+        /// <param name="startups">启动类</param>
         public AggregateStartup(IEnumerable<IStartup> startups)
         {
             if (startups == null)

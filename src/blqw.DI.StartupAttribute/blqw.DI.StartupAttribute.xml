@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>blqw.DI.StartupAttribute</name>
+    </assembly>
+    <members>
+        <member name="T:blqw.DI.AssemblyStartupAttribute">
+            <summary>
+            指定当前程序集的启动类
+            </summary>
+        </member>
+        <member name="M:blqw.DI.AssemblyStartupAttribute.#ctor(System.Type)">
+            <summary>
+            指定当前程序集的启动类
+            </summary>
+            <param name="type">启动类</param>
+        </member>
+        <member name="P:blqw.DI.AssemblyStartupAttribute.Type">
+            <summary>
+            启动类
+            </summary>
+        </member>
+    </members>
+</doc>

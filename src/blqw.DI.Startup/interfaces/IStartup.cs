@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace blqw
+namespace blqw.DI
 {
     /// <summary>
     /// 启动器接口
