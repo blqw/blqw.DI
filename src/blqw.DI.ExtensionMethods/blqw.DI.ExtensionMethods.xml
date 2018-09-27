@@ -14,11 +14,6 @@
             扩展方法
             </summary>
         </member>
-        <member name="F:blqw.DI.ExtensionMethods._pool">
-            <summary>
-            对象池
-            </summary>
-        </member>
         <member name="M:blqw.DI.ExtensionMethods.Autowrite(System.IServiceProvider,System.Object)">
             <summary>
             注入字段和属性
@@ -69,37 +64,6 @@
             <typeparam name="T">待获取或创建的对象类型</typeparam>
             <param name="provider">服务提供程序</param>
             <returns></returns>
-        </member>
-        <member name="T:blqw.DI.ObjectPool`1">
-            <summary>
-            对象池
-            </summary>
-        </member>
-        <member name="P:blqw.DI.ObjectPool`1.Capacity">
-            <summary>
-            对象池容量大小
-            </summary>
-        </member>
-        <member name="M:blqw.DI.ObjectPool`1.Pop(`0@)">
-            <summary>
-            弹出对象
-            </summary>
-        </member>
-        <member name="T:blqw.DI.ObjectPool`1.Recyclable">
-            <summary>
-            可回收的对象
-            </summary>
-        </member>
-        <member name="M:blqw.DI.ObjectPool`1.Recyclable.#ctor(`0,blqw.DI.ObjectPool{`0})">
-            <summary>
-            初始化对象
-            </summary>
-            <param name="obj">待回收的 对象</param>
-        </member>
-        <member name="M:blqw.DI.ObjectPool`1.Recyclable.Dispose">
-            <summary>
-            回收对象
-            </summary>
         </member>
     </members>
 </doc>

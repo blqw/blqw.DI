@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 
@@ -10,11 +11,6 @@ namespace blqw.DI
     /// </summary>
     public static class ExtensionMethods
     {
-        /// <summary>
-        /// 对象池
-        /// </summary>
-        readonly static ObjectPool<object[]> _pool = new ObjectPool<object[]>(64, () => new object[1], x => x[0] = null);
-
         /// <summary>
         /// 注入字段和属性
         /// </summary>
@@ -50,37 +46,14 @@ namespace blqw.DI
                 }
             }
 
-            object[] args = null;
-            IDisposable disposable = null;
-
-            try
+            foreach (var property in type.GetProperties(flags))
             {
-                foreach (var property in type.GetProperties(flags))
+                var attr = property.GetCustomAttributes().OfType<IServiceProviderFactory<IServiceProvider>>().FirstOrDefault();
+                var value = attr?.CreateServiceProvider(serviceProvider).GetServiceOrCreateInstance(property.PropertyType);
+                if (value != null)
                 {
-                    var attr = property.GetCustomAttributes().OfType<IServiceProviderFactory<IServiceProvider>>().FirstOrDefault();
-                    var value = attr?.CreateServiceProvider(serviceProvider).GetServiceOrCreateInstance(property.PropertyType);
-                    if (value != null)
-                    {
-                        var setter = property.GetSetMethod(true);
-                        if (setter != null)
-                        {
-                            if (args == null)
-                            {
-                                disposable = _pool.Pop(out args);
-                            }
-                            args[0] = value;
-                            setter.Invoke(instance, args);
-                        }
-                        else if (type.GetField($"<{property.Name}>k__BackingField", flags) is FieldInfo field)
-                        {
-                            field.SetValue(instance, value);
-                        }
-                    }
+                    property.Set(instance, value);
                 }
-            }
-            finally
-            {
-                disposable?.Dispose();
             }
 
             return serviceProvider;
@@ -106,6 +79,7 @@ namespace blqw.DI
             }
             return obj;
         }
+
         /// <summary>
         /// 获取用于创建指定对象并注入字段和属性的委托方法
         /// </summary>
@@ -130,6 +104,7 @@ namespace blqw.DI
                 return obj;
             };
         }
+
         /// <summary>
         /// 动态创建对象, 并注入字段和属性
         /// </summary>
@@ -146,6 +121,7 @@ namespace blqw.DI
             }
             return obj;
         }
+
         /// <summary>
         /// 动态创建对象, 并注入字段和属性
         /// </summary>
@@ -155,6 +131,7 @@ namespace blqw.DI
         /// <returns></returns>
         public static T CreateInstance<T>(this IServiceProvider provider, params object[] parameters) =>
             (T)CreateInstance(provider, typeof(T), parameters);
+
         /// <summary>
         /// 从服务中获取对象或动态创建对象, 并注入字段和属性
         /// </summary>
@@ -163,5 +140,20 @@ namespace blqw.DI
         /// <returns></returns>
         public static T GetServiceOrCreateInstance<T>(this IServiceProvider provider) =>
             (T)GetServiceOrCreateInstance(provider, typeof(T));
+
+        /// <summary>
+        /// 通过服务中的 <see cref="IServiceProviderFactory{IServiceProvider}"/> 重新编译提供程序
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        public static IServiceProvider RebuildFromFactory(this IServiceProvider provider)
+        {
+            var factories = provider.GetServices<IServiceProviderFactory<IServiceProvider>>();
+            foreach (var factory in factories)
+            {
+                provider = factory.CreateServiceProvider(provider);
+            }
+            return provider;
+        }
     }
 }
