@@ -23,7 +23,7 @@ namespace blqw.DI
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddContext(IServiceCollection services) =>
+        public static IServiceCollection AddContext(this IServiceCollection services) =>
             services.AddSingleton<IServiceProviderFactory<IServiceProvider>, ServiceProviderFactory>();
 
         private class ServiceProviderFactory : IServiceProviderFactory<IServiceProvider>

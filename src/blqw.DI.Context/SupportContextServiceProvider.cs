@@ -34,7 +34,7 @@ namespace blqw.DI
             Id = CreateId();
             if (!ServiceContext.Push(this))
             {
-                throw new NotSupportedException();
+                throw new InvalidOperationException();
             }
         }
 

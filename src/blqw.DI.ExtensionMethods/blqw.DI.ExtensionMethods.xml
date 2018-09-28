@@ -65,5 +65,12 @@
             <param name="provider">服务提供程序</param>
             <returns></returns>
         </member>
+        <member name="M:blqw.DI.ExtensionMethods.RebuildFromFactory(System.IServiceProvider)">
+            <summary>
+            通过服务中的 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceProviderFactory`1"/> 重新编译提供程序
+            </summary>
+            <param name="provider"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>
