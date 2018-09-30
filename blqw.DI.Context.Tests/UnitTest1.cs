@@ -35,15 +35,13 @@ namespace blqw.DI.Context.Tests
                 Assert.Equal(ServiceContext.Provider, provider);
             }
 
-        }
+            {
 
-        [Fact]
-        public void AddContext2()
-        {
-            var provider = ServiceContextFactory.Create(new ServiceCollection().BuildServiceProvider());
+                var provider = ServiceContextFactory.Create(new ServiceCollection().BuildServiceProvider());
 
-            Assert.NotNull(ServiceContext.Provider);
-            Assert.Equal(ServiceContext.Provider, provider);
+                Assert.NotNull(ServiceContext.Provider);
+                Assert.Equal(ServiceContext.Provider, provider);
+            }
         }
     }
 }
