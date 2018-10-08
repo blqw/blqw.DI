@@ -30,7 +30,7 @@ v1.0.0 [2018.08.01] 初始版</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DI.StartupAttribute\blqw.DI.StartupAttribute.xml</DocumentationFile>
+    <DocumentationFile>blqw.DI.StartupAttribute.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

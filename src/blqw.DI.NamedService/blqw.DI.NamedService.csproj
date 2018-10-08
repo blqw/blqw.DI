@@ -26,7 +26,7 @@ v1.0.0 [2018.08.01] 初始版</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DI.NamedService\blqw.DI.NamedService.xml</DocumentationFile>
+    <DocumentationFile>blqw.DI.NamedService.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

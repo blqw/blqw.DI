@@ -33,7 +33,7 @@
     <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DI.Startup\blqw.DI.Startup.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DI.Startup\blqw.DI.Startup.xml</DocumentationFile>
+    <DocumentationFile>blqw.DI.Startup.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

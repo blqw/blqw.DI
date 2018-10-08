@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\FF\source\repos\blqw.Startup\src\blqw.DI.ExtensionMethods\blqw.DI.ExtensionMethods.xml</DocumentationFile>
+    <DocumentationFile>blqw.DI.ExtensionMethods.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

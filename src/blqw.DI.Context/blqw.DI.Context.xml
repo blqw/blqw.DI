@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>blqw.DI.Context</name>
+    </assembly>
+    <members>
+        <member name="T:blqw.DI.ServiceContext">
+            <summary>
+            服务提供程序上下文
+            </summary>
+        </member>
+        <member name="P:blqw.DI.ServiceContext.RootProvider">
+            <summary>
+            根节点 <see cref="T:System.IServiceProvider"/>
+            </summary>
+        </member>
+        <member name="P:blqw.DI.ServiceContext.Path">
+            <summary>
+            上下文路径
+            </summary>
+        </member>
+        <member name="P:blqw.DI.ServiceContext.Provider">
+            <summary>
+            当前 <see cref="T:System.IServiceProvider"/>
+            </summary>
+        </member>
+        <member name="P:blqw.DI.ServiceContext.Id">
+            <summary>
+            当前上下文 <see cref="T:System.IServiceProvider"/> 的id
+            </summary>
+        </member>
+        <member name="M:blqw.DI.ServiceContext.GetId(System.IServiceProvider)">
+            <summary>
+            用于获取上下文中的指定 <see cref="T:System.IServiceProvider"/> 的Id
+            </summary>
+            <param name="provider"></param>
+            <returns></returns>
+        </member>
+        <member name="T:blqw.DI.ServiceContextFactory">
+            <summary>
+            用于创建支持上下文的 <see cref="T:System.IServiceProvider"/>
+            </summary>
+        </member>
+        <member name="M:blqw.DI.ServiceContextFactory.Create(System.IServiceProvider)">
+            <summary>
+            创建一个支持上下文的 <see cref="T:System.IServiceProvider"/>
+            </summary>
+            <param name="provider"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
