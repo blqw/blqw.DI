@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -12,6 +14,49 @@ namespace blqw.DI
     /// </summary>
     public static class StartupExtensions
     {
+        #region LoadAllAssemblies
+
+        readonly static ConcurrentDictionary<string, List<Assembly>> _cache = new ConcurrentDictionary<string, List<Assembly>>();
+
+        /// <summary>
+        /// 从指定路径载入所有程序集
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static List<Assembly> LoadAllAssemblies(this AppDomain domain, string path) =>
+            _cache.GetOrAdd(path, p =>
+            {
+                var list = new List<Assembly>();
+                var dm = AppDomain.CreateDomain("temp");
+
+                foreach (var dll in Directory.GetFiles(p, "*.dll", SearchOption.AllDirectories))
+                {
+                    try
+                    {
+                        var ass = dm.Load(File.ReadAllBytes(dll));
+                        list.Add(domain.Load(ass.GetName()));
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+
+                AppDomain.Unload(dm);
+                return list.Where(x => x != null).ToList();
+            });
+
+        /// <summary>
+        /// 载入所有程序集
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <returns></returns>
+        public static List<Assembly> LoadAllAssemblies(this AppDomain domain) =>
+            domain.LoadAllAssemblies(domain.BaseDirectory);
+
+        #endregion
+
+
         #region FindStartupTypes
 
         /// <summary>
