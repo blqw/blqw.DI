@@ -16,7 +16,7 @@ namespace blqw.DI
     {
         #region LoadAllAssemblies
 
-        readonly static ConcurrentDictionary<string, List<Assembly>> _cache = new ConcurrentDictionary<string, List<Assembly>>();
+        readonly static ConcurrentDictionary<string, IList<Assembly>> _cache = new ConcurrentDictionary<string, IList<Assembly>>();
 
         /// <summary>
         /// 从指定路径载入所有程序集
@@ -24,10 +24,9 @@ namespace blqw.DI
         /// <param name="domain"></param>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static List<Assembly> LoadAllAssemblies(this AppDomain domain, string path) =>
+        public static IList<Assembly> LoadAllAssemblies(this AppDomain domain, string path) =>
             _cache.GetOrAdd(path, p =>
             {
-                var list = new List<Assembly>();
                 var dm = AppDomain.CreateDomain("temp");
 
                 foreach (var dll in Directory.GetFiles(p, "*.dll", SearchOption.AllDirectories))
@@ -35,15 +34,13 @@ namespace blqw.DI
                     try
                     {
                         var ass = dm.Load(File.ReadAllBytes(dll));
-                        list.Add(domain.Load(ass.GetName()));
+                        domain.Load(ass.GetName());
                     }
-                    catch (Exception)
-                    {
-                    }
+                    catch (Exception) { }
                 }
 
                 AppDomain.Unload(dm);
-                return list.Where(x => x != null).ToList();
+                return domain.GetAssemblies().ToList().AsReadOnly();
             });
 
         /// <summary>
@@ -51,7 +48,7 @@ namespace blqw.DI
         /// </summary>
         /// <param name="domain"></param>
         /// <returns></returns>
-        public static List<Assembly> LoadAllAssemblies(this AppDomain domain) =>
+        public static IList<Assembly> LoadAllAssemblies(this AppDomain domain) =>
             domain.LoadAllAssemblies(domain.BaseDirectory);
 
         #endregion

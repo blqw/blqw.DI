@@ -95,6 +95,21 @@
             公开的扩展方法
             </summary>
         </member>
+        <member name="M:blqw.DI.StartupExtensions.LoadAllAssemblies(System.AppDomain,System.String)">
+            <summary>
+            从指定路径载入所有程序集
+            </summary>
+            <param name="domain"></param>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:blqw.DI.StartupExtensions.LoadAllAssemblies(System.AppDomain)">
+            <summary>
+            载入所有程序集
+            </summary>
+            <param name="domain"></param>
+            <returns></returns>
+        </member>
         <member name="M:blqw.DI.StartupExtensions.FindStartupTypesByAttribute(System.Reflection.Assembly)">
             <summary>
             根据 <seealso cref="!:AssemblyStartupAttribute"/> 特性查找启动类

@@ -48,5 +48,12 @@
             <param name="provider"></param>
             <returns></returns>
         </member>
+        <member name="M:blqw.DI.ServiceContextFactory.AddContext(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            添加上下文服务，但依赖二次编译操作
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using System.Xml.XPath;
 
 
-[assembly:AssemblyStartup(typeof(demo.Startup))]
+[assembly: AssemblyStartup(typeof(demo.Startup))]
 namespace demo
 {
     class Startup
@@ -43,9 +43,13 @@ namespace demo
         {
             var provider = new ServiceCollection()
                                     .AddLogging()
-                                    .ConfigureServices()     //调用 启动类的 ConfigureServices
-                                    .BuildServiceProvider()
-                                    .Configure();            //调用 启动类的 Configure
+                                    .BuildServiceProvider();
+            var b = provider.GetService<IEnumerable<ILogger>>();
+            var c = provider.GetService<List<ILogger[]>>();
+
+
+
+
 
         }
 
