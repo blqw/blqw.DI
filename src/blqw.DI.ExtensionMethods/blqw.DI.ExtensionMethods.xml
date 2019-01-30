@@ -4,7 +4,7 @@
         <name>blqw.DI.ExtensionMethods</name>
     </assembly>
     <members>
-        <member name="T:blqw.DI.AutowriteAttribute">
+        <member name="T:blqw.DI.AutowiredAttribute">
             <summary>
             自动注入特性
             </summary>
