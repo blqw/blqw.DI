@@ -10,29 +10,29 @@ namespace blqw.DI.ExtensionMethods.Tests
         class MyEntity
         {
 
-            [Autowrite] IServiceProvider _serviceProvider;
+            [Autowired] IServiceProvider _serviceProvider;
 
-            [Autowrite] readonly IServiceProvider _serviceProviderReadOnly;
+            [Autowired] readonly IServiceProvider _serviceProviderReadOnly;
 
-            [Autowrite] static IServiceProvider _staticServiceProvider;
+            [Autowired] static IServiceProvider _staticServiceProvider;
 
-            [Autowrite] readonly static IServiceProvider _staticServiceProviderReadOnly;
+            [Autowired] readonly static IServiceProvider _staticServiceProviderReadOnly;
 
-            [Autowrite] public IServiceProvider PublicServiceProvider;
+            [Autowired] public IServiceProvider PublicServiceProvider;
 
-            [Autowrite] public static IServiceProvider PublicStaticServiceProvider;
+            [Autowired] public static IServiceProvider PublicStaticServiceProvider;
 
-            [Autowrite] public IServiceProvider ServiceProvider { get; set; }
+            [Autowired] public IServiceProvider ServiceProvider { get; set; }
 
-            [Autowrite] public IServiceProvider ServiceProviderReadOnly { get; }
+            [Autowired] public IServiceProvider ServiceProviderReadOnly { get; }
 
-            [Autowrite] public IServiceProvider ServiceProviderPrivateSet { get; private set; }
+            [Autowired] public IServiceProvider ServiceProviderPrivateSet { get; private set; }
 
-            [Autowrite] public static IServiceProvider StaticServiceProvider { get; set; }
+            [Autowired] public static IServiceProvider StaticServiceProvider { get; set; }
 
-            [Autowrite] public static IServiceProvider StaticServiceProviderPrivateSet { get; private set; }
+            [Autowired] public static IServiceProvider StaticServiceProviderPrivateSet { get; private set; }
 
-            [Autowrite] public static IServiceProvider StaticServiceProviderReadOnly { get; }
+            [Autowired] public static IServiceProvider StaticServiceProviderReadOnly { get; }
 
 
             public static IServiceProvider NoAutoWrite1 { get; set; }
@@ -54,7 +54,7 @@ namespace blqw.DI.ExtensionMethods.Tests
                 {
                     continue;
                 }
-                if (field.IsDefined(typeof(AutowriteAttribute)))
+                if (field.IsDefined(typeof(AutowiredAttribute)))
                 {
                     Assert.Equal(field.GetValue(test), p);
                 }
@@ -69,7 +69,7 @@ namespace blqw.DI.ExtensionMethods.Tests
                 {
                     continue;
                 }
-                if (prop.IsDefined(typeof(AutowriteAttribute)))
+                if (prop.IsDefined(typeof(AutowiredAttribute)))
                 {
                     Assert.Equal(prop.GetValue(test), p);
                 }
@@ -89,7 +89,7 @@ namespace blqw.DI.ExtensionMethods.Tests
                     {
                         continue;
                     }
-                    if (field.IsDefined(typeof(AutowriteAttribute)))
+                    if (field.IsDefined(typeof(AutowiredAttribute)))
                     {
                         Assert.Equal(field.GetValue(test), p);
                     }
@@ -104,7 +104,7 @@ namespace blqw.DI.ExtensionMethods.Tests
                     {
                         continue;
                     }
-                    if (prop.IsDefined(typeof(AutowriteAttribute)))
+                    if (prop.IsDefined(typeof(AutowiredAttribute)))
                     {
                         Assert.Equal(prop.GetValue(test), p);
                     }
@@ -131,7 +131,7 @@ namespace blqw.DI.ExtensionMethods.Tests
                 {
                     continue;
                 }
-                if (field.IsDefined(typeof(AutowriteAttribute)))
+                if (field.IsDefined(typeof(AutowiredAttribute)))
                 {
                     Assert.Equal(field.GetValue(null), p);
                 }
@@ -146,7 +146,7 @@ namespace blqw.DI.ExtensionMethods.Tests
                 {
                     continue;
                 }
-                if (prop.IsDefined(typeof(AutowriteAttribute)))
+                if (prop.IsDefined(typeof(AutowiredAttribute)))
                 {
                     Assert.Equal(prop.GetValue(null), p);
                 }
@@ -166,7 +166,7 @@ namespace blqw.DI.ExtensionMethods.Tests
                     {
                         continue;
                     }
-                    if (field.IsDefined(typeof(AutowriteAttribute)))
+                    if (field.IsDefined(typeof(AutowiredAttribute)))
                     {
                         Assert.Equal(field.GetValue(null), p);
                     }
@@ -181,7 +181,7 @@ namespace blqw.DI.ExtensionMethods.Tests
                     {
                         continue;
                     }
-                    if (prop.IsDefined(typeof(AutowriteAttribute)))
+                    if (prop.IsDefined(typeof(AutowiredAttribute)))
                     {
                         Assert.Equal(prop.GetValue(null), p);
                     }
