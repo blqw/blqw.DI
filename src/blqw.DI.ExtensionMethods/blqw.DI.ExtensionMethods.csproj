@@ -13,12 +13,15 @@
     <PackageTags>DelegateServiceProvdier delegate blqw IOC DI</PackageTags>
     <Platforms>AnyCPU</Platforms>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageReleaseNotes>v1.0.0 [2018.09.05] 初始版
+    <PackageReleaseNotes>v1.0.0.1 [2019.01.30] 
+修改命名错误 AutowriteAttribute -&gt; AutowiredAttribute 
+v1.0.0 [2018.09.05] 初始版
 新增 AutowriteAttribute
 新增扩展方法 Autowrite
 新增扩展方法 CreateInstance等
 </PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
