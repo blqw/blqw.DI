@@ -17,7 +17,7 @@ namespace blqw.DI
         /// <param name="serviceProvider"></param>
         /// <param name="instance"> 待注入的对象实例或类型实例 </param>
         /// <returns></returns>
-        public static IServiceProvider Autowrite(this IServiceProvider serviceProvider, object instance)
+        public static IServiceProvider Autowired(this IServiceProvider serviceProvider, object instance)
         {
             if (serviceProvider == null || instance == null)
             {
@@ -75,7 +75,7 @@ namespace blqw.DI
             var obj = ActivatorUtilities.GetServiceOrCreateInstance(serviceProvider, type);
             if (obj != null)
             {
-                serviceProvider.Autowrite(obj);
+                serviceProvider.Autowired(obj);
             }
             return obj;
         }
@@ -99,7 +99,7 @@ namespace blqw.DI
                 var obj = factory(provider, args);
                 if (obj != null)
                 {
-                    provider?.Autowrite(obj);
+                    provider?.Autowired(obj);
                 }
                 return obj;
             };
@@ -117,7 +117,7 @@ namespace blqw.DI
             var obj = ActivatorUtilities.CreateInstance(provider, instanceType, parameters);
             if (obj != null)
             {
-                provider.Autowrite(obj);
+                provider.Autowired(obj);
             }
             return obj;
         }

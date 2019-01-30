@@ -5,7 +5,7 @@
 ## Demo
 
 
-#### Autowrite & CreateInstance
+#### Autowired & CreateInstance
 ```csharp
 static void Main(string[] args)
 {
@@ -17,25 +17,25 @@ static void Main(string[] args)
     Console.WriteLine(a.Logger);
 
     var b = new MyClass();
-    provider.Autowrite(b);
+    provider.Autowired(b);
     Console.WriteLine(b.Logger);
 
-    provider.Autowrite(typeof(MyClass));
+    provider.Autowired(typeof(MyClass));
 }
 
 class MyClass
 {
-    [Autowrite]
+    [Autowired]
     public ILogger<MyClass> Logger { get; }
-    [Autowrite]
+    [Autowired]
     public ILogger<MyClass> Logger2 { get; private set; }
-    [Autowrite]
+    [Autowired]
     private readonly ILogger<MyClass> _logger;
 
-    [Autowrite]
+    [Autowired]
     public static ILogger<MyClass> Logger3 { get; }
 
-    [Autowrite]
+    [Autowired]
     private readonly static ILogger<MyClass> _logger2;
 }
 ```
@@ -45,6 +45,6 @@ class MyClass
 ## 更新
 ###### [1.0.0] 2018.09.05 
 * 初始版
-* 新增 AutowriteAttribute
-* 新增扩展方法 Autowrite
+* 新增 AutowiredAttribute
+* 新增扩展方法 Autowired
 * 新增扩展方法 CreateInstance等

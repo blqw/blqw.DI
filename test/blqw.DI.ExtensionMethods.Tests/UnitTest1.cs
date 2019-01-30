@@ -42,7 +42,7 @@ namespace blqw.DI.ExtensionMethods.Tests
 
         }
         [Fact]
-        public void Autowrite()
+        public void Autowired()
         {
             var provider = new ServiceCollection().BuildServiceProvider();
             var p = provider.GetService<IServiceProvider>();
@@ -81,7 +81,7 @@ namespace blqw.DI.ExtensionMethods.Tests
 
             using (var scope = provider.CreateScope())
             {
-                scope.ServiceProvider.Autowrite(test);
+                scope.ServiceProvider.Autowired(test);
                 p = scope.ServiceProvider.GetService<IServiceProvider>();
                 foreach (var field in test.GetType().GetFields((BindingFlags)(-1)))
                 {
@@ -113,18 +113,18 @@ namespace blqw.DI.ExtensionMethods.Tests
                         Assert.Null(prop.GetValue(test));
                     }
                 }
-                provider.Autowrite(test);
+                provider.Autowired(test);
             }
         }
 
 
         [Fact]
-        public void AutowriteStatic()
+        public void AutowiredStatic()
         {
             var provider = new ServiceCollection().BuildServiceProvider();
             var p = provider.GetService<IServiceProvider>();
             var type = typeof(MyEntity);
-            provider.Autowrite(type);
+            provider.Autowired(type);
             foreach (var field in type.GetFields((BindingFlags)(-1)))
             {
                 if (field.Name.StartsWith("<") || !field.IsStatic)
@@ -158,7 +158,7 @@ namespace blqw.DI.ExtensionMethods.Tests
 
             using (var scope = provider.CreateScope())
             {
-                scope.ServiceProvider.Autowrite(type);
+                scope.ServiceProvider.Autowired(type);
                 p = scope.ServiceProvider.GetService<IServiceProvider>();
                 foreach (var field in type.GetFields((BindingFlags)(-1)))
                 {
@@ -190,7 +190,7 @@ namespace blqw.DI.ExtensionMethods.Tests
                         Assert.Null(prop.GetValue(null));
                     }
                 }
-                provider.Autowrite(type);
+                provider.Autowired(type);
             }
         }
     }
