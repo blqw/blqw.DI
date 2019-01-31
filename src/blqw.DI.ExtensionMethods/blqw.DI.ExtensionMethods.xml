@@ -14,7 +14,7 @@
             扩展方法
             </summary>
         </member>
-        <member name="M:blqw.DI.ExtensionMethods.Autowrite(System.IServiceProvider,System.Object)">
+        <member name="M:blqw.DI.ExtensionMethods.Autowired(System.IServiceProvider,System.Object)">
             <summary>
             注入字段和属性
             </summary>
