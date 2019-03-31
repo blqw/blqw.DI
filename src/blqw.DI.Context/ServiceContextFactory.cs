@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,5 +17,20 @@ namespace blqw.DI
         /// <returns></returns>
         public static IServiceProvider Create(IServiceProvider provider) =>
             provider as SupportContextServiceProvider ?? new SupportContextServiceProvider(provider, null);
+
+        /// <summary>
+        /// 添加上下文服务，但依赖二次编译操作
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddContext(this IServiceCollection services) =>
+            services.AddSingleton<IServiceProviderFactory<IServiceProvider>, ServiceProviderFactory>();
+
+        private class ServiceProviderFactory : IServiceProviderFactory<IServiceProvider>
+        {
+            public IServiceProvider CreateBuilder(IServiceCollection services) => throw new NotImplementedException();
+
+            public IServiceProvider CreateServiceProvider(IServiceProvider provider) => Create(provider);
+        }
     }
 }

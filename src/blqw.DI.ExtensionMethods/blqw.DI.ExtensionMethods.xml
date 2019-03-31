@@ -4,7 +4,7 @@
         <name>blqw.DI.ExtensionMethods</name>
     </assembly>
     <members>
-        <member name="T:blqw.DI.AutowriteAttribute">
+        <member name="T:blqw.DI.AutowiredAttribute">
             <summary>
             自动注入特性
             </summary>
@@ -14,12 +14,7 @@
             扩展方法
             </summary>
         </member>
-        <member name="F:blqw.DI.ExtensionMethods._pool">
-            <summary>
-            对象池
-            </summary>
-        </member>
-        <member name="M:blqw.DI.ExtensionMethods.Autowrite(System.IServiceProvider,System.Object)">
+        <member name="M:blqw.DI.ExtensionMethods.Autowired(System.IServiceProvider,System.Object)">
             <summary>
             注入字段和属性
             </summary>
@@ -70,36 +65,12 @@
             <param name="provider">服务提供程序</param>
             <returns></returns>
         </member>
-        <member name="T:blqw.DI.ObjectPool`1">
+        <member name="M:blqw.DI.ExtensionMethods.RebuildFromFactory(System.IServiceProvider)">
             <summary>
-            对象池
+            通过服务中的 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceProviderFactory`1"/> 重新编译提供程序
             </summary>
-        </member>
-        <member name="P:blqw.DI.ObjectPool`1.Capacity">
-            <summary>
-            对象池容量大小
-            </summary>
-        </member>
-        <member name="M:blqw.DI.ObjectPool`1.Pop(`0@)">
-            <summary>
-            弹出对象
-            </summary>
-        </member>
-        <member name="T:blqw.DI.ObjectPool`1.Recyclable">
-            <summary>
-            可回收的对象
-            </summary>
-        </member>
-        <member name="M:blqw.DI.ObjectPool`1.Recyclable.#ctor(`0,blqw.DI.ObjectPool{`0})">
-            <summary>
-            初始化对象
-            </summary>
-            <param name="obj">待回收的 对象</param>
-        </member>
-        <member name="M:blqw.DI.ObjectPool`1.Recyclable.Dispose">
-            <summary>
-            回收对象
-            </summary>
+            <param name="provider"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>

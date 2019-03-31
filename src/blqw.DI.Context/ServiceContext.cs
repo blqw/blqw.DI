@@ -82,7 +82,7 @@ namespace blqw.DI
                 return false;
             }
             var current = ProviderImpl;
-            if (current == null || provider.IsMyParent(current))
+            if (current == null || provider.IsMyParent(current) || (provider.IsRoot && current.IsRoot))
             {
                 ProviderImpl = provider;
                 return true;
