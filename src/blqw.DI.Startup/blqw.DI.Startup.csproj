@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>blqw.DI</RootNamespace>
     <ProjectName>blqw.Startup</ProjectName>
-    <Version>1.0.0.0</Version>
+    <Version>0.0.2</Version>
 
     <PackageId>blqw.DI.Startup</PackageId>
     <PackageVersion>$(Version)</PackageVersion>
@@ -20,8 +20,8 @@
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/9656154</PackageIconUrl>
     <PackageTags>Startup blqw IOC DI</PackageTags>
     <PackageReleaseNotes>v0.0.1 [2018.09.07] 初始版本</PackageReleaseNotes>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <FileVersion>0.0.2.0</FileVersion>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Platforms>AnyCPU;x86</Platforms>
@@ -39,7 +39,7 @@
   <ItemGroup>
     <PackageReference Include="blqw.DI.ExtensionMethods" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.0" />
   </ItemGroup>
 
 </Project>

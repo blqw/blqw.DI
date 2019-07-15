@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using blqw.DI.logging;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -17,14 +18,14 @@ namespace blqw.DI
 
         internal static ILogger Logger
         {
-            get => _logger;
+            get => _logger ?? EmptyLogger.Instance;
             set
             {
-                if (_logger is PrestoreLogger pre)
+                if (value != null && _logger is PrestoreLogger pre)
                 {
                     pre.WriteTo(value);  //将预存日志写入新日志组件
-                    _logger = value;
                 }
+                _logger = value;
             }
         }
 

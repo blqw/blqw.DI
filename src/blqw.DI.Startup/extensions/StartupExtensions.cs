@@ -207,13 +207,12 @@ namespace blqw.DI
             }
 
             //获取日志服务
-            var logger = serviceProvider.GetLogger<IStartup>();
-            Startup.Logger = logger;
-            using (logger.BeginScope("安装服务"))
+            Startup.Logger = serviceProvider.GetLogger<IStartup>();
+            using (Startup.Logger.BeginScope("安装服务"))
             {
                 foreach (var startup in startups)
                 {
-                    startup.SetLoggerIfAbsent(logger).Configure(serviceProvider);
+                    startup.SetLoggerIfAbsent(Startup.Logger).Configure(serviceProvider);
                 }
             }
             return serviceProvider;
